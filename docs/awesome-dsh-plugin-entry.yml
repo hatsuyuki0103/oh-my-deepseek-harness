@@ -1,0 +1,11 @@
+# awesome-dsh-plugin 收录条目（提交到 awesome-dsh-plugin 仓库 data/plugins/ 目录）
+# 文件名：<YOUR-GITHUB-USERNAME>__oh-my-deepseek-harness.yml
+# 使用前把 <YOUR-GITHUB-USERNAME> 替换为你的 GitHub 用户名。
+
+url: https://github.com/<YOUR-GITHUB-USERNAME>/oh-my-deepseek-harness
+name: <YOUR-GITHUB-USERNAME>/oh-my-deepseek-harness
+category: skill
+description:
+  en: OMX-style workflow skills for DeepSeek Harness: deep-interview, ralplan, ralph, autopilot, team, code-review and 19 more, rewritten on native DSH tools, without vision skills.
+  zh: OMX 风格工作流技能集：deep-interview、ralplan、ralph、autopilot、team、code-review 等 23 个技能，基于 DSH 原生工具重写，不含视觉技能。
+tarball: https://github.com/<YOUR-GITHUB-USERNAME>/oh-my-deepseek-harness/releases/latest/download/oh-my-deepseek-harness.tgz
