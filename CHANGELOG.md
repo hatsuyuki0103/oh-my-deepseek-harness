@@ -2,6 +2,20 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.1.0] - 2026-08-17
+
+### Added
+
+- **Hindsight 本地 daemon 守护**（升级免疫兜底）：插件 apply 时检查 `~/.hindsight/coding-agent.json`（daemon 模式才守护）→ 探活 9077 `/health` → 未健康则静默拉起 `node <hindsight>/dist/daemon-start.js --harness dsh`（detached + windowsHide + NO_PROXY/HF_ENDPOINT 环境）。与 Hindsight 插件自身的自动拉起补丁同一条启动链，幂等由 daemon-start.js 健康自守卫背书。
+- `lib/watchdog.mjs`：三态决策纯函数（shouldWatch / isDaemonHealthy / resolveDaemonStartPath / makeSpawnDaemon / runWatchdog），可通过 cordis 行配置关闭（`enableHindsightWatchdog: false`）或指定 `daemonStartPath`。
+- 契约测试：`test/watchdog.test.mjs`（5 项：配置判定、健康探活、路径解析、spawn 形状、三态端到端）。
+
+### Notes
+
+- Hindsight 插件 dsh 适配器不自动拉起 daemon 的根因侧补丁（dist/dsh.js 本地补丁：重加被 tree-shake 的 startDaemonDetached + apply 时 daemon 模式健康检查后启动），补丁重打说明见 .omx 上下文快照。
+
+[1.1.0]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v1.1.0
+
 ## [1.0.0] - 2026-08-17
 
 首个公开发布版本：OMX 风格工作流技能集，移植自 oh-my-codex（MIT，v0.20.5），全部重写为 DeepSeek Harness 原生机制；不含视觉技能。
