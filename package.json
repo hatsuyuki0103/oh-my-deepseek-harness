@@ -84,5 +84,13 @@
   "engines": {
     "node": "^22.19.0 || >=24.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hatsuyuki0103/oh-my-deepseek-harness.git"
+  },
+  "homepage": "https://github.com/hatsuyuki0103/oh-my-deepseek-harness#readme",
+  "bugs": {
+    "url": "https://github.com/hatsuyuki0103/oh-my-deepseek-harness/issues"
+  }
 }
