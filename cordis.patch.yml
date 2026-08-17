@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: MIT
+# oh-my-deepseek-harness bundle patch: mount the OMX-style workflow skills host plugin.
+- insert:
+    - id: omdsh-skills
+      name: oh-my-deepseek-harness

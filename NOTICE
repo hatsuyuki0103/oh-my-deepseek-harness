@@ -1,0 +1,13 @@
+oh-my-deepseek-harness
+Copyright (c) 2026 oh-my-deepseek-harness contributors
+
+This product includes skill workflow designs adapted from oh-my-codex
+(https://github.com/Yeachan-Heo/oh-my-codex), licensed under the MIT License.
+
+The adapted skill content has been substantially rewritten for DeepSeek
+Harness native mechanisms (goal / workflow / ralph / subagent /
+ask_user_question tools, .omx workspace conventions); Codex CLI-specific
+sections (omx CLI, tmux orchestration, agent_type role routing, hooks) and
+all vision-dependent workflows have been removed.
+
+See THIRD_PARTY_NOTICES.md for details.
