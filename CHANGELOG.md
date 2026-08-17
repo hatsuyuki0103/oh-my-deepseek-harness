@@ -2,6 +2,14 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.1.1] - 2026-08-17
+
+### Fixed
+
+- **中文 Windows 上 daemon 自动拉起失败的编码根因**：hindsight-embed 的 profile env 模板含 UTF-8 中文注释，Python 默认 GBK 读取时 `UnicodeDecodeError` 崩溃，导致 VBS/插件补丁/守护全部启动路径静默失败（此前手动启动成功是因为手工加了 PYTHONUTF8=1）。修复：守护 spawn 显式注入 `PYTHONUTF8=1` + `PYTHONIOENCODING=utf-8`；用户环境亦已持久化（重启/登录路径同样覆盖）。
+
+[1.1.1]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v1.1.1
+
 ## [1.1.0] - 2026-08-17
 
 ### Added
