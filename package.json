@@ -1,7 +1,7 @@
 {
   "name": "oh-my-deepseek-harness",
   "description": "OMX 风格工作流技能集（oh-my-deepseek-harness）：移植自 oh-my-codex（MIT）的 deep-interview / ralplan / ralph / plan / autopilot / team / code-review 等技能，全部重写为 DeepSeek Harness 原生机制（goal / workflow / ralph / subagent / ask_user_question 工具），不含视觉技能。",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "type": "module",
   "main": "./index.mjs",
   "exports": {

@@ -2,6 +2,26 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.1.2] - 2026-08-17
+
+### Fixed
+
+- **登录小黑窗（uv.exe 黑色控制台）的根治**：根因是 Win11 默认终端为 Windows Terminal 时，CUI（控制台子系统）进程链在"父进程无控制台"时新建的**可见**控制台会被 WT 拉出窗口。两条罪魁链都已封死：
+  - **API daemon 自拉链**（黑窗主犯）：hindsight-embed 在本地无 hindsight-api 二进制时回退 `uvx hindsight-api@… --daemon`，且用 `DETACHED_PROCESS` spawn → uvx/uv 全程无控制台 → **uv 新建可见控制台（窗口标题 = uv.exe）**。修复：daemon_embed_manager.py 本地补丁改用 `powershell -WindowStyle Hidden` 包装（powershell 自建并隐藏控制台，uvx→uv→python 全链继承这一个隐藏控制台；stdout/stderr 句柄保留，daemon 日志捕获不丢）。
+  - **守护拉起链**（daemon-start.js）：`windowsHide:true`（CREATE_NO_WINDOW）同样导致 uv 新建可见控制台。修复：win32 + daemon.start 时改经 `wscript.exe hindsight-daemon.vbs wait`（SW_HIDE 隐藏控制台 + 同步退出码）。
+  - 顶层登录链统一为：Startup shim VBS → `~/.dsh/autostart/hindsight-daemon.vbs`（唯一真源，支持 wait 参数）→ `hindsight-daemon-launch.ps1`（隐藏控制台 + `exit $LASTEXITCODE` + `%TEMP%\hindsight-daemon-autostart.log`）。
+- **编码连环坑的根治（替代 1.1.1 的 PYTHONUTF8 方案）**：真正的数据源污染是 hindsight-embed 的 profile env 模板与 `coding-agent.env` 里 5 处 UTF-8 em dash `—`（15 个非 ASCII 字节）——Python 默认 GBK 读取必然崩溃；而 `PYTHONUTF8=1` 只是压住了读文件这一头，反而把 daemon stop 的 netstat 输出（GBK）强制按 UTF-8 解码弄崩（`AttributeError: 'NoneType' object has no attribute 'splitlines'`）。修复：
+  - uv 缓存中 `env.example` 模板与 `~/.hindsight/profiles/coding-agent.env` 全部 ASCII 化（em dash → 连字符）；
+  - 守护 spawn 不再注入 `PYTHONUTF8`/`PYTHONIOENCODING`（用户环境持久化项亦已移除）；
+  - 结论：GBK 读取崩溃的源头是数据文件而非代码，数据源干净后默认编码即可。
+
+### Notes
+
+- 补丁矩阵（升级会被覆盖，重打 SOP 见 .omx 上下文快照）：`dist/daemon-start.js`（wscript 路由）、`hindsight_embed/daemon_embed_manager.py`（powershell 隐藏包装）、`dist/dsh.js`（自动拉起补丁，v1.1.0 起）。
+- 若日后重新安装/升级 hindsight-embed，需重打模板 ASCII 化补丁。
+
+[1.1.2]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v1.1.2
+
 ## [1.1.1] - 2026-08-17
 
 ### Fixed
