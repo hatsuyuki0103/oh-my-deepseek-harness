@@ -11,7 +11,7 @@ Adapted from the skill designs of [oh-my-codex](https://github.com/Yeachan-Heo/o
 - `omx ralph` CLI → DSH native `ralph` tool
 - `.omx/` workspace conventions (context / interviews / specs / plans) preserved
 
-**Vision skills are out of scope** (DeepSeek has no vision): visual-ralph, visual-verdict, frontend-ui-ux, hud, vision.
+**Vision is supported**: `visual-ralph` (implement or restyle frontend UI against an approved reference / URL baseline, with DSH vision model + `read_image` structured verdict and pixel iteration, leaving reusable design tokens). visual-verdict / frontend-ui-ux / vision are OMX-internal mechanisms and were not ported standalone; hud is terminal-HUD orchestration and does not depend on a vision model — not included yet.
 
 ## Bundled skills
 
@@ -19,7 +19,7 @@ Adapted from the skill designs of [oh-my-codex](https://github.com/Yeachan-Heo/o
 |---|---|
 | `deep-interview` | Socratic deep interview: per-round structured questions + ambiguity scoring, converging to an executable spec |
 
-(v0.1.0 pilot; ralplan / ralph / plan / autopilot / team / ultrawork / code-review / security-review / analyze / tdd ... are on the roadmap.)
+(v0.1.0 pilot; ralplan / ralph / plan / autopilot / team / ultrawork / code-review / security-review / analyze / tdd / visual-ralph ... are on the roadmap.)
 
 ## Install
 

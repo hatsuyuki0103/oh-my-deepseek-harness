@@ -2,6 +2,21 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.2.0] - 2026-08-28
+
+### Added
+
+- **视觉技能 `visual-ralph`**：按已批准的视觉参考（静态图或仓库截图脚本产出的 URL 基线）实现/重构前端 UI 的视觉 Ralph 编排——DSH 视觉模型 + `read_image` 结构化判分（score / verdict / category_match / differences[] / suggestions[] / reasoning 六键，阈值 90）、可选 pixelmatch 像素差次级证据、可复用设计系统沉淀；参考源 oh-my-codex 的 OMX 专有机制（imagegen / 内部 vision 工具 / notify-hook / web-clone 调用）全部改写为 DSH 原生能力。
+- `test/skills.test.mjs`：技能目录卫生契约测试（SKILL.md 完整性、frontmatter 契约、README 技能表与计数一致性、无「无视觉」过时声明、新技能无 OMX 残留且裁决 JSON 六键齐全、提供方注册挂接）。
+
+### Changed
+
+- `design` / `ai-slop-cleaner`：移除「DSH 无视觉」过时假设，改为视觉模型已可用（可用 `read_image` 盘点/判分；无参考图时保留用户视觉确认兜底）。
+- README / README.zh：视觉声明与技能表同步；README 技能计数 23 → 24；`docs/awesome-dsh-plugin-entry.yml` 市场条目同步（24 技能、含视觉）。
+- 版本号 1.1.2 → 1.2.0。
+
+[1.2.0]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v1.2.0
+
 ## [1.1.2] - 2026-08-17
 
 ### Fixed

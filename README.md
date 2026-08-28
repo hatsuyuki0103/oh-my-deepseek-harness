@@ -11,7 +11,7 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 - `omx ralph` CLI → DSH 原生 `ralph` 工具
 - `.omx/` 工作区约定（context / interviews / specs / plans）保留
 
-**视觉相关技能不做**（DeepSeek 无视觉）：visual-ralph、visual-verdict、frontend-ui-ux、hud、vision。
+**视觉已支持**：`visual-ralph`（按参考图/URL 基线实现或重构前端 UI，DSH 视觉模型 + `read_image` 结构化判分 + 像素级迭代，并沉淀可复用设计系统）。visual-verdict / frontend-ui-ux / vision 属 OMX 内部机制，未独立移植；hud 是终端 HUD 编排，不依赖视觉模型，暂未收录。
 
 ## 已收录技能
 
@@ -29,6 +29,7 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 | 技能 | 说明 |
 |---|---|
 | `ralph` | 持久执行闭环：原生 ralph 工具 / 会话内纪律 + 独立架构复核 |
+| `visual-ralph` | 视觉 Ralph：参考图/基线 → 用户批准 → ralph 实现 → read_image 判分（阈值 90）→ 像素差次级证据 → 可复用设计系统 |
 | `autopilot` | 严格自主交付循环：deep-interview → ralplan → ultragoal → code-review → ultraqa |
 | `team` | 协调并行团队：workflow 工具编排 + 共享任务清单 + 验证通道 |
 | `ultrawork` | 并行执行引擎：验收标准先行 + 直接/证据双通道 + 轻量验证 |
@@ -46,7 +47,7 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 | `tdd` | 测试先行：Red-Green-Refactor 铁律 |
 | `ai-slop-cleaner` | 反冗余清理：先锁测试 + 逐气味清理 + 兜底分类 |
 | `git-master` | Git 专家：原子提交 / 变基 / 分支管理（Conventional Commit） |
-| `design` | DESIGN.md 设计源工作流（文本化，无视觉依赖） |
+| `design` | DESIGN.md 设计源工作流（文本化；像素对齐走 visual-ralph） |
 
 **运维与自举**
 
@@ -60,7 +61,7 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 
 配套角色提示词（`roles/`，供 subagent 复用）：planner / architect / critic / analyst(Metis) / momus / oracle / executor / verifier / code-reviewer / test-engineer。
 
-（v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举，共 23 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
+（v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举，共 24 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
 
 ## 安装
 
@@ -80,7 +81,7 @@ dsh plugin --profile web add oh-my-deepseek-harness
 ## 开发
 
 ```sh
-node --test test/*.test.mjs   # 提供方契约测试
+node --test test/*.test.mjs   # 技能契约测试
 ```
 
 新增技能 = 在 `skills/<name>/SKILL.md` 写 frontmatter（`name` + `description` 必填，`argument-hint` 可选）+ 正文，无需改任何代码。

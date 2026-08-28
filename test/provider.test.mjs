@@ -66,7 +66,7 @@ test('真实技能目录：全部技能被发现且 frontmatter 合法、kebab �
   const files = await discoverSkillFiles(PKG_SKILLS_DIR)
   const EXPECTED_SKILLS = [
     'deep-interview', 'plan', 'ralplan', 'prometheus-strict',
-    'ralph', 'autopilot', 'team', 'ultrawork', 'ultragoal', 'ultraqa',
+    'ralph', 'visual-ralph', 'autopilot', 'team', 'ultrawork', 'ultragoal', 'ultraqa',
     'code-review', 'security-review', 'analyze', 'build-fix', 'tdd',
     'ai-slop-cleaner', 'git-master', 'design',
     'cancel', 'doctor', 'note', 'skill-authoring', 'ecomode',
@@ -94,7 +94,7 @@ test('提供方 list/get 契约：候选形状、惰性加载、身份校验', a
   const candidates = await provider.list()
   const EXPECTED_SKILLS = [
     'deep-interview', 'plan', 'ralplan', 'prometheus-strict',
-    'ralph', 'autopilot', 'team', 'ultrawork', 'ultragoal', 'ultraqa',
+    'ralph', 'visual-ralph', 'autopilot', 'team', 'ultrawork', 'ultragoal', 'ultraqa',
     'code-review', 'security-review', 'analyze', 'build-fix', 'tdd',
     'ai-slop-cleaner', 'git-master', 'design',
     'cancel', 'doctor', 'note', 'skill-authoring', 'ecomode',
