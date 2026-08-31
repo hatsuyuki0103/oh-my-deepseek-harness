@@ -54,8 +54,8 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 | 技能 | 说明 |
 |---|---|
 | `cancel` | 停止工作流：goal 结单 + 后台任务终止 + 状态终态化（保留可续） |
-| `doctor` | DSH 环境诊断：harness / 技能 / 插件 / 记忆 / 环境五面体检 |
-| `note` | 会话笔记：.omx/notepad.md + hindsight 记忆库 |
+| `doctor` | DSH 环境诊断：harness / 技能 / 插件 / 环境四面体检 |
+| `note` | 会话笔记：.omx/notepad.md 工作区笔记 |
 | `skill-authoring` | DSH 技能创作指南：契约 / 注册 / 打包 / 发布全流程 |
 | `ecomode` | 省 token 纪律：自做优先 / 合并委派 / 后台收口 |
 

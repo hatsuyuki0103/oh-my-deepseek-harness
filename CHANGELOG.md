@@ -2,6 +2,20 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.3.0] - 2026-09-01
+
+### Removed
+
+- **Hindsight daemon 守护移除**：`lib/watchdog.mjs`、`test/watchdog.test.mjs`、`index.mjs` 中的 watchdog 调用与 `enableHindsightWatchdog`/`daemonStartPath` 配置全部删除。用户于 2026-09-01 决定完全卸载 Hindsight（自动 hook 烧 token 根因修复后仍选择移除）；daemon 与 pg0 已停、启动脚本已删，记忆数据保留在 `~/.pg0/instances/hindsight-embed-coding-agent` 与 `~/.hindsight`（导出备份见工作区 `.omx/notepad.md`）。
+
+### Changed
+
+- `note`：移除 `hindsight_ingest_document` 落点与「Correction 纠错记忆」，只写 `.omx/notepad.md`（追加式：时间戳 + 标题 + 要点）；「会话结束自动入库」纪律同步删除。
+- `doctor`：移除记忆体检面（`hindsight_diagnose` / `--memory`），四体检面（harness / skills / plugins / env）。
+- README / README.zh 技能表同步；版本号 1.2.0 → 1.3.0。
+
+[1.3.0]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v1.3.0
+
 ## [1.2.0] - 2026-08-28
 
 ### Added
