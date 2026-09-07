@@ -2,6 +2,20 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.4.0] - 2026-09-07
+
+### Added
+
+- **`aliyun-media` 技能**：阿里云 Token Plan 生图 / 生视频 / 视频编辑。`detect` 三值检测（env → `~/.dsh/.credentials.yaml` 的 `refs:` → settings 意图，fail-closed）；云端走异步任务（轮询 + 即时下载 + Base64 本地图内联 + 超单段时长自动分段/尾帧衔接/ffmpeg 拼接 + 水印恒关闭）；未配置时先给配置配方、再探针回退本机 stable-diffusion-webui / ComfyUI / ffmpeg。零依赖 node 脚本 `skills/aliyun-media/scripts/aliyun-media.mjs`（detect/scan/constants/image/edit/video t2v|i2v|r2v|edit|stitch/sd-txt2img/comfy-run），模型与 endpoint 常量单点于脚本（`constants` 输出含降级链）。
+- `test/aliyun-media.test.mjs`：U1-U9 单元（mask/mime/dataUri+上限/参数+水印恒 false/结果 URL 提取+轮询守卫/dry-run 脱敏/detect 三值 fixture/常量单点 grep 门禁/分段规划）。
+
+### Changed
+
+- README 技能表新增 `aliyun-media` 行、计数 24 → 25；docs/awesome-dsh-plugin-entry.yml 计数同步（17 more → 18 more / 24 → 25）；版本号 1.3.0 → 1.4.0。
+- **README.zh.md 本版本显式豁免全量同步**：该文件仍为 v0.1.0 试点陈旧表且无 CI 门禁覆盖（`test/skills.test.mjs` 只校验 README.md）；整体刷新登记为 follow-up，避免本 PR 混入无关大改。
+
+[1.4.0]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v1.4.0
+
 ## [1.3.0] - 2026-09-01
 
 ### Removed
