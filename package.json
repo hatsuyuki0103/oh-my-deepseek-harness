@@ -1,7 +1,7 @@
 {
   "name": "oh-my-deepseek-harness",
   "description": "OMX 风格工作流技能集（oh-my-deepseek-harness）：移植自 oh-my-codex（MIT）的 deep-interview / ralplan / ralph / plan / autopilot / team / code-review 等技能，全部重写为 DeepSeek Harness 原生机制（goal / workflow / ralph / subagent / ask_user_question / read_image 工具），含视觉技能 visual-ralph。",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "type": "module",
   "main": "./index.mjs",
   "exports": {
@@ -19,7 +19,10 @@
     "README.zh.md",
     "NOTICE",
     "THIRD_PARTY_NOTICES.md",
-    "LICENSE"
+    "LICENSE",
+    "test",
+    "CHANGELOG.md",
+    "docs"
   ],
   "dsh": {
     "bundle": {
@@ -49,14 +52,15 @@
     ],
     "compatibility": {
       "dshVersions": [
-        "0.1.0-rc.6"
+        "0.1.0-rc.6",
+        "0.2.0-rc.1"
       ]
     },
     "capability": {
       "id": "omdsh-workflow-skills",
       "kind": "skill-set",
       "invocation": "skill deep-interview",
-      "expected": "会话技能目录中出现 deep-interview 等技能；模型经 skill 工具加载后按 DSH 原生工具执行访谈 / 规划 / 执行闭环"
+      "expected": "会话技能目录中出现 deep-interview 等技能；模型经 skill 工具加载后按 DSH 原生工具执行访谈 / 规划 / 执行闭环；名册含 spawn_teammate 等官方团队九工具时，可派 teammate 并行执行并以 team_task_* 记录任务状态（未挂载时按 docs/capability-matrix.md 四级降级）"
     },
     "evidence": {
       "install": null,

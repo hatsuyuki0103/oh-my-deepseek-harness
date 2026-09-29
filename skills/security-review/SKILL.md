@@ -6,6 +6,8 @@ argument-hint: "[diff | 文件/目录 | 依赖清单]"
 
 # Security Review（安全审查，只读）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 定位
 
 对改动或既有面做只读安全审查。DSH 环境的审查面与通用审查不同：除了代码本身，还要审插件/技能/配置/依赖/网络与权限边界。本技能不修改任何文件；发现只报告 + 建议修复路径（修复走 executor/ralph 等执行通道）。

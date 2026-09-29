@@ -6,6 +6,8 @@ argument-hint: "<任务列表或描述>"
 
 # Ultrawork（并行执行引擎）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 定位
 
 Ultrawork 是高吞吐并行执行引擎，是一个**组件**而非持久/验证模式：它提供并行度、上下文纪律与委派判断，但不拥有持久目标跟踪（→ ultragoal）、协调团队生命周期（→ team）、持久单主闭环（→ ralph）、完整自动流水线（→ autopilot）。
@@ -51,7 +53,7 @@ Ultrawork 是高吞吐并行执行引擎，是一个**组件**而非持久/验�
 
 - 需要持久目标/故事检查点/跨步骤续跑 → ultragoal；
 - 需要协调团队/共享任务状态/持久多 worker 生命周期 → team；
-- 用户显式点名的持久单主闭环 → ralph 工具；
+- 用户显式点名的持久单主闭环 → ralph 工具（未挂载时用会话内 Ralph 纪律，见矩阵）；
 - 反复重试仍失败 → 报告问题，不无限重试；
 - 依赖不明/需求冲突/验收目标实质分叉 → 上报用户。
 

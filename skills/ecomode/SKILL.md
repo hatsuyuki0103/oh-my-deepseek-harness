@@ -6,6 +6,8 @@ argument-hint: "[与 ralph|ultrawork|autopilot 组合]"
 
 # Ecomode（省 token 模式）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 定位
 
 Ecomode 是一个**修饰符**，叠加在执行工作流上（ralph / ultrawork / autopilot / 普通开发），让每一分 token 花在刀刃上。DSH 没有多模型档位切换，省钱靠**决策纪律**而非模型选择。

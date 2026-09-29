@@ -6,6 +6,9 @@ argument-hint: "[--tests|--build|--lint|--typecheck|--custom \"模式\"|--intera
 
 # UltraQA（对抗式动态 e2e QA）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+> 评审通道（按名册实况）：名册含 `spawn_teammate`（**仅 Lead 可调用**；teammate 需先请 Lead 建队）→ 团队双通道（两名 teammate 各担一通道，`wait_agent` 收证据）；否则名册含 `subagent` → 子代理双通道；否则报告 `independent review unavailable`，不批准。
+
 ## 运营契约
 
 - 结果先行、证据密集；用户更新是当前分支的局部覆盖；
@@ -54,8 +57,8 @@ argument-hint: "[--tests|--build|--lint|--typecheck|--custom \"模式\"|--intera
 2. **BASELINE**：按目标跑项目测试/构建/lint/typecheck/自定义命令（查模式 + 退出码 + 失败标记）。
 3. **ADVERSARIAL**：执行场景矩阵（既有 e2e + 生成 harness）；显式建模恶意用户行为；捕获命令、退出码、关键输出、工件与清理状态。
 4. **CHECK**：基线 + 对抗场景全过、生成工件已清理或有意跟踪、报告证据完整才 YES；否则进诊断。
-5. **DIAGNOSE**：architect 子代理（roles/architect.md 前缀 + 场景矩阵 + 输出）给根因、安全含义、修复建议。
-6. **FIX**：executor 子代理（roles/executor.md 前缀 + 诊断 + 受影响文件 + 约束：保留无关脏工作、清理临时 harness、守住安全边界）精确修复。
+5. **DIAGNOSE**：architect 子代理（roles/architect.md 前缀 + 场景矩阵 + 输出）给根因、安全含义、修复建议。（名册含团队面时由 `spawn_teammate` teammate 承担；`subagent` 未挂载时按 `docs/capability-matrix.md` 降级为会话内执行并标注。）
+6. **FIX**：executor 子代理（roles/executor.md 前缀 + 诊断 + 受影响文件 + 约束：保留无关脏工作、清理临时 harness、守住安全边界）精确修复。（通道同上：团队双通道优先，`subagent` 未挂载时按矩阵降级为会话内执行并标注。）
 7. **CLEANUP**：移除临时 harness/夹具/日志/进程/状态文件（除非是有意交付物）；回滚不属于最终修复的实验性改动；复查工作区并记录剩余有意改动/残留。
 8. **REPEAT**：带着更新的矩阵与失败历史回步骤 1。
 

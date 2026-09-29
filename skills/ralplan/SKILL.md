@@ -6,6 +6,9 @@ argument-hint: "[--interactive|--deliberate] <任务描述>"
 
 # Ralplan（共识规划）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+> 评审通道（按名册实况）：名册含 `spawn_teammate`（**仅 Lead 可调用**；teammate 需先请 Lead 建队）→ 团队双通道（两名 teammate 各担一通道，`wait_agent` 收证据）；否则名册含 `subagent` → 子代理双通道；否则报告 `independent review unavailable`，不批准。
+
 ## 定位
 
 Ralplan 是 `plan --consensus` 的独立入口：驱动 Planner、Architect、Critic 三个角色完成结构化审议（RALPLAN-DR：默认短模式，--deliberate 应对高风险），并记录完整评审生命周期。**它是规划模式：只产出规划产物，绝不直接改代码；执行交接必须经用户显式批准。**
@@ -20,7 +23,7 @@ Ralplan 是 `plan --consensus` 的独立入口：驱动 Planner、Architect、Cr
 DSH 没有原生角色路由，角色 = **本插件 roles/ 目录下的提示词 + subagent 工具的隔离上下文**：
 
 - 角色提示词位于本插件包根目录的 `roles/` 下（即本技能目录的上两级：`../../roles/planner.md`、`../../roles/architect.md`、`../../roles/critic.md`）。找不到时向用户报告，不要用随手编的短提示词顶替。
-- 发起子代理：用 `subagent` 工具，prompt = 角色文件全文 + 完整任务陈述 + 上下文快照路径 + 相关产物路径（PRD/test-spec/既有评审）。
+- 发起子代理：用 `subagent` 工具，prompt = 角色文件全文 + 完整任务陈述 + 上下文快照路径 + 相关产物路径（PRD/test-spec/既有评审）。（团队面已挂载时优先 `spawn_teammate` 团队双通道；`subagent` 未挂载时按 `docs/capability-matrix.md` 降级并标注。）
 - **Architect 与 Critic 必须串行**：等 Architect 子代理完成后再发 Critic；绝不在同一批并行发起；绝不让 Architect 自批 Critic 闸。
 - 起草计划的主会话不兼任审查者——评审必须由独立子代理上下文完成。
 
@@ -35,13 +38,13 @@ DSH 没有原生角色路由，角色 = **本插件 roles/ 目录下的提示词
 3. **Architect 评审**：评审架构合理性，必须包含最强钢人反方论（antithesis）、至少一个真实权衡张力、可行时的综合路径；deliberate 模式显式标记原则违反。**等它完成后才进第 4 步。**
 4. **Critic 评审**：核验原则-选项一致性、备选探索公平性、风险缓解清晰度、验收可测性、验证步骤具体性；deliberate 模式必须拒绝缺失/薄弱的 pre-mortem 或扩展测试计划。
 5. **重审循环（上限 5 次）**：Critic 非 OKAY → 收集双方反馈 → Planner 修订 → 回 Architect → 回 Critic，直到 OKAY 或到上限（上限时把最好版本交给用户）。
-6. **合并改进**：通过后把接受的改进合并进计划文件（含简短变更记录）；最终输出含 ADR（Decision / Drivers / Alternatives considered / Why chosen / Consequences / Follow-ups）+ DSH 执行交接指引（subagent 名册、workflow 并行方案、ralph 工具回退、goal 工具承接）。
+6. **合并改进**：通过后把接受的改进合并进计划文件（含简短变更记录）；最终输出含 ADR（Decision / Drivers / Alternatives considered / Why chosen / Consequences / Follow-ups）+ DSH 执行交接指引（subagent 名册、workflow 并行方案、ralph 工具回退（缺省时以会话内 Ralph 纪律替代，见矩阵）、goal 工具承接）。
 7. **（仅 --interactive）最终批准**：ask_user_question 呈交计划：批准（选执行通道）/ 请求修改 / 拒绝。用户批准后才按所选通道交接；未批准绝不执行。
 
 ## 计划/执行边界
 
 - Ralplan 进行中：只读仓库 + 只写 `.omx/context/`、`.omx/plans/`、`.omx/specs/`（以及必要的 `.omx/state/` 记录）。实现类写操作全部出界。
-- 规范流程：`ralplan → 评审闭环 → 用户显式批准 → 执行通道（goal 工具 / workflow 团队 / ralph 工具）`。
+- 规范流程：`ralplan → 评审闭环 → 用户显式批准 → 执行通道（goal 工具 / 团队九工具 / ralph 工具）`（团队面未挂载时以 `workflow` 扇出降级；`ralph` 工具未挂载时以会话内 Ralph 纪律替代，见 `docs/capability-matrix.md`）。
 - 交接前必须落盘**持久化交接记录**（.omx/plans/ralplan-{slug}-handoff.md 或计划文件内独立段）：
 
 ```
@@ -64,7 +67,7 @@ DSH 没有原生角色路由，角色 = **本插件 roles/ 目录下的提示词
 
 ## 执行前闸（ralplan-first gate）
 
-执行通道（ralph 工具 / autopilot / workflow 团队）代价高，模糊请求先被本闸拦下转共识规划：
+执行通道（ralph 工具若名册含、否则转会话内 Ralph 纪律 / autopilot / 团队九工具；团队面未挂载时退 `workflow` 扇出）代价高，模糊请求先被本闸拦下转共识规划：
 
 **通过（可直接执行，任一信号即可）**：带文件路径、issue/PR 编号、camelCase/PascalCase/snake_case 符号、测试命令、编号步骤、验收标准、错误引用、代码块，或 `force:` / `!` 前缀。
 
@@ -75,9 +78,9 @@ DSH 没有原生角色路由，角色 = **本插件 roles/ 目录下的提示词
 ## 目标模式跟进（用户批准执行后）
 
 - 长期可追踪目标 → DSH goal 工具（create_goal，客观验收后 update_goal 标 complete）；
-- 持久单主闭环（用户明确要求）→ DSH 原生 ralph 工具；
-- 多路并行 → team / ultrawork（基于 workflow 工具）；
-- 默认推荐 goal 工具承接（可追踪、可续跑）；workflow 团队适合可并行拆分的交付；ralph 只在用户点名时用。
+- 持久单主闭环（用户明确要求）→ DSH 原生 ralph 工具（未挂载时按矩阵降级：会话内 Ralph 纪律）；
+- 多路并行 → team / ultrawork（团队九工具 + 共享任务板；团队面未挂载时用 `workflow` 扇出）；
+- 默认推荐 goal 工具承接（可追踪、可续跑）；团队（官方团队九工具 + 任务板）适合可并行拆分的交付，团队面未挂载时退 `workflow` 扇出；ralph 只在用户点名时用。
 
 ## 升级与停止条件
 

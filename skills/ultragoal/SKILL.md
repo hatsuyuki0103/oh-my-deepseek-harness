@@ -6,9 +6,13 @@ argument-hint: "<简报或规格路径>"
 
 # Ultragoal（持久多目标执行）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 定位
 
 Ultragoal 把一份简报变成仓库内持久工件（.omx/ultragoal/brief.md、goals.json、ledger.jsonl），再用 **DSH goal 工具**安全驱动执行：一个聚合目标（create_goal 建一次）指向整个计划，故事 G001/G002… 的进度记在台账里。DSH 的 create_goal / get_goal / update_goal 即 Codex goal mode 的对应物。
+
+三层分工（各层只做一件事，互不代偿）：**goal 工具 = 目标状态**（唯一目标接口：create_goal / get_goal / update_goal）；**团队任务板 = 执行任务**（`team_task_create` / `team_task_list` / `team_task_update`，故事的派活与进度态）；**`.omx/ultragoal/**` = 审计证据**（brief / goals / ledger 只作证据留档，不是任务态）。
 
 ## 建目标（create-goals）
 
@@ -44,7 +48,7 @@ Ultragoal 把一份简报变成仓库内持久工件（.omx/ultragoal/brief.md�
 
 ## 与 Team 叠加
 
-故事明显受益于并行时：ultragoal 保持 leader 所有（goals.json + ledger.jsonl），team（workflow 工具）做并行执行、交任务/证据状态。worker 不碰目标状态、不建台账、不 checkpoint；leader 用 team 终验证据 + 新鲜 get_goal 快照做 checkpoint。
+故事明显受益于并行时：ultragoal 保持 leader 所有（goals.json + ledger.jsonl），team（官方团队九工具优先：`team_task_create`/`team_task_list`/`team_task_update` 派活 + `spawn_teammate` 组队；名册未挂载九工具时降级 `workflow`）做并行执行、交任务/证据状态。worker 不碰目标状态、不建台账、不 checkpoint；leader 用 team 终验证据 + 新鲜 get_goal 快照做 checkpoint。任务态只经 `team_task_update` 变更，`team_task_list` 是唯一任务现状视图。
 
 ## 最终清理/评审闸（最后一个故事完成前必跑）
 
@@ -52,7 +56,7 @@ Ultragoal 把一份简报变成仓库内持久工件（.omx/ultragoal/brief.md�
 2. ai-slop-cleaner 技能对改动文件清扫（无相关改动则记录 no-op 通过）；
 3. 清扫后重跑验证；
 4. **架构不变量审计**：从 brief/spec/访谈/转向产物推导不可协商的架构/领域不变量，逐条用实现证据 + 测试证据 + 独立评审证据证明；
-5. **独立评审**：code-review 技能走独立子代理路径（code-reviewer + architect 两个独立 subagent），干净 = 推荐 APPROVE 且架构 CLEAR 且不变量闸 passed；
+5. **独立评审**：code-review 技能走独立评审通道——含 `spawn_teammate` 时优先团队双通道（`spawn_teammate` 常驻评审员各担一通道 + `wait_agent` 收证据）；未挂载时回退独立子代理路径（code-reviewer + architect 两个独立 subagent）；干净 = 推荐 APPROVE 且架构 CLEAR 且不变量闸 passed；
 6. 闸不干净 → **不** update_goal；记录 review-blocked 阻塞故事（证据 = 评审发现），继续修；
 7. 闸干净 → update_goal(action complete) → get_goal 取 complete 快照 → 最终 checkpoint（含质量闸 JSON：aiSlopCleaner / verification / codeReview / architectureInvariantGate）。
 
@@ -62,7 +66,7 @@ Ultragoal 把一份简报变成仓库内持久工件（.omx/ultragoal/brief.md�
 - 聚合目标未真正全部完成绝不 update_goal(action complete)；
 - 中间故事 checkpoint 需 active 快照，最终完成需 complete 快照；
 - ledger.jsonl 是持久审计轨迹：每次成功/失败都 checkpoint；
-- goal 工具是唯一目标状态接口，任何文件/脚本不得暗改目标。
+- goal 工具是唯一目标状态接口，任何文件/脚本不得暗改目标；任务态只经 `team_task_update` 变更，不得绕过目标态（`.omx/ultragoal/**` 与 `.omx/state/team/**` 只作审计证据，不承载任务态）；
 
 ## 最终清单
 
@@ -70,7 +74,7 @@ Ultragoal 把一份简报变成仓库内持久工件（.omx/ultragoal/brief.md�
 - [ ] 聚合目标已 create_goal（或确认同聚合目标仍 active）
 - [ ] 每个故事完成前做过 objective↔证据 完成审计
 - [ ] 中间故事只 checkpoint，不 update_goal
-- [ ] 最终故事通过清理/评审闸（deslop + 回归验证 + 不变量审计 + 独立双 subagent 评审）
+- [ ] 最终故事通过清理/评审闸（deslop + 回归验证 + 不变量审计 + 独立评审：团队双通道 `spawn_teammate`+`wait_agent`，未挂载时为双 subagent 路径）
 - [ ] 全部完成后 update_goal(action complete) + complete 快照最终 checkpoint
 - [ ] ledger 无缺口（成功/失败/被阻都有记录）
-- [ ] worker（team 叠加时）未碰目标状态
+- [ ] worker（team 叠加时）未碰目标状态，且未写 `.omx/ultragoal/**`；任务现状以 `list_agents` + `team_task_list` 见证

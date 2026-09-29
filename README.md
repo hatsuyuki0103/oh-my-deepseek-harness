@@ -6,9 +6,9 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 
 - `omx question` → `ask_user_question`（结构化逐轮提问）
 - Codex goal mode → DSH `create_goal` / `get_goal` / `update_goal`
-- 原生子代理角色路由 → `subagent` / `subagent_fork` + 角色提示词
-- tmux 团队编排 → `workflow` 工具 + 后台任务
-- `omx ralph` CLI → DSH 原生 `ralph` 工具
+- 原生子代理角色路由 → `subagent` / `subagent_fork` + 角色提示词（`subagent` 面被预设停用或未挂载时，评审/并行回退团队双通道：`spawn_teammate` 组队 + `wait_agent` 收证据；团队面也不可用时再降 `workflow` 扇出，详见 `docs/capability-matrix.md`）
+- tmux 团队编排 → 官方智能体团队优先（`spawn_teammate` 组队 + 团队九工具 + 任务板为唯一台账）：按名册实况四级降级 = ① 团队九工具 → ② `workflow` 脚本扇出 → ③ `subagent`/`subagent_fork` 一次性子代理 → ④ 会话内串行，先命中即用、不得越级，详见 `docs/capability-matrix.md`
+- `omx ralph` CLI → DSH 原生 `ralph` 工具（被预设停用时按 `docs/capability-matrix.md` 降级到会话内 Ralph 纪律）
 - `.omx/` 工作区约定（context / interviews / specs / plans）保留
 
 **视觉已支持**：`visual-ralph`（按参考图/URL 基线实现或重构前端 UI，DSH 视觉模型 + `read_image` 结构化判分 + 像素级迭代，并沉淀可复用设计系统）。visual-verdict / frontend-ui-ux / vision 属 OMX 内部机制，未独立移植；hud 是终端 HUD 编排，不依赖视觉模型，暂未收录。
@@ -31,7 +31,7 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 | `ralph` | 持久执行闭环：原生 ralph 工具 / 会话内纪律 + 独立架构复核 |
 | `visual-ralph` | 视觉 Ralph：参考图/基线 → 用户批准 → ralph 实现 → read_image 判分（阈值 90）→ 像素差次级证据 → 可复用设计系统 |
 | `autopilot` | 严格自主交付循环：deep-interview → ralplan → ultragoal → code-review → ultraqa |
-| `team` | 协调并行团队：workflow 工具编排 + 共享任务清单 + 验证通道 |
+| `team` | 协调并行团队（团队原生）：`spawn_teammate` 组队 + 团队九工具（`send_message`/`wait_agent`/`interrupt_agent`）+ 任务板 `team_task_*` 为唯一台账；未挂载时降级 `workflow` 工具编排 + 共享任务清单 |
 | `ultrawork` | 并行执行引擎：验收标准先行 + 直接/证据双通道 + 轻量验证 |
 | `ultragoal` | 持久多目标执行：goal 工具聚合目标 + .omx/ultragoal 台账 + 最终评审闸 |
 | `ultraqa` | 对抗式动态 e2e QA：9 类恶意场景矩阵 + 测试-诊断-修复循环 |
@@ -56,12 +56,14 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 | 技能 | 说明 |
 |---|---|
 | `cancel` | 停止工作流：goal 结单 + 后台任务终止 + 状态终态化（保留可续） |
-| `doctor` | DSH 环境诊断：harness / 技能 / 插件 / 环境四面体检 |
+| `doctor` | DSH 环境诊断：harness / 技能 / 插件 / 环境 / 可选能力探测（--capabilities）五面体检 |
 | `note` | 会话笔记：.omx/notepad.md 工作区笔记 |
 | `skill-authoring` | DSH 技能创作指南：契约 / 注册 / 打包 / 发布全流程 |
 | `ecomode` | 省 token 纪律：自做优先 / 合并委派 / 后台收口 |
 
 配套角色提示词（`roles/`，供 subagent 复用）：planner / architect / critic / analyst(Metis) / momus / oracle / executor / verifier / code-reviewer / test-engineer。
+
+可选能力与降级：官方团队九工具 / `ralph` / `subagent` 系 / `workflow` 等通道可能在当前 profile 未挂载或被预设停用；探测方式、判别陷阱与四级降级阶梯见 `docs/capability-matrix.md`（20 个技能/角色文件已内联同款指针）。
 
 （v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举 + 媒体生成，共 26 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
 

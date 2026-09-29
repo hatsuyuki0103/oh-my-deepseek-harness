@@ -6,9 +6,11 @@ argument-hint: "<目标或问题陈述>"
 
 # Prometheus Strict（严格规划）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 目的
 
-在歧义仍有风险时，用三声部严格规划代替直接执行：**Metis 澄清**（需求缺口）、**Momus 挑战**（假设与验证缺口）、**Oracle 综合**（交接就绪的最终计划）。产物是纯规划工件，交接给 goal 工具（长期目标）或 workflow 团队（并行通道）。
+在歧义仍有风险时，用三声部严格规划代替直接执行：**Metis 澄清**（需求缺口）、**Momus 挑战**（假设与验证缺口）、**Oracle 综合**（交接就绪的最终计划）。产物是纯规划工件，交接给 goal 工具（长期目标）或团队（官方团队九工具 + 共享任务板；团队面未挂载时退 `workflow` 扇出，见矩阵）。
 
 理念源自 OMO Prometheus（code-yeongyu/oh-my-openagent），本技能按 DSH 原生机制重新实现。
 
@@ -57,7 +59,7 @@ argument-hint: "<目标或问题陈述>"
 4. **Oracle 综合（两遍）**：Pass 1 综合（目标/范围/假设/已解批评/步骤与 owner/验证矩阵/回滚/交接）；Pass 2 自检（见 roles/oracle.md 断言清单），失败回 Pass 1，上限 3 循环，超限带标注产出并上报。
 5. **Momus→Oracle 有界复验**：Oracle 综合后重新让 Momus 核验没有引入新风险（范围加了验证没加、通道拆分产生依赖环、安全加固与停止条件矛盾）；最多 3 次复综合，仍有阻断项则标注 carried-forward 进终稿。
 6. **后计划 Metis 复查**：终稿渲染后再用 Metis 扫一遍「只有计划成型后才暴露的歧义」（通道重叠、停止条件与验收矛盾等）；有阻断缺口回步骤 4 Pass 1，否则继续。
-7. **交接**：默认推荐 DSH goal 工具（create_goal 承接长期目标，验收后 update_goal 标 complete）；并行通道安全时才推荐 workflow 团队；ralph 工具只在用户点名时用。**用户未明确授权不启动任何执行通道。**
+7. **交接**：默认推荐 DSH goal 工具（create_goal 承接长期目标，验收后 update_goal 标 complete）；并行通道安全时才推荐团队（官方团队九工具 + 共享任务板；团队面未挂载时退 `workflow` 扇出）；ralph 工具仅当名册含且用户点名时用（否则走会话内 Ralph 纪律，见矩阵）。**用户未明确授权不启动任何执行通道。**
 
 ## 产物
 

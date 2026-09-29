@@ -6,7 +6,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
+import { mkdtemp, mkdir, writeFile, rm, readdir } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -62,16 +62,12 @@ test('kebabName：归一化与兜底', () => {
   assert.equal(kebabName('---'), 'skill')
 })
 
-test('真实技能目录：全部技能被发现且 frontmatter 合法、kebab 唯一', async () => {
+test('真实技能目录：全部技能被发现且 frontmatter 合法、kebab 唯一、集合等于技能目录', async () => {
+  const dirs = (await readdir(PKG_SKILLS_DIR, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name).sort()
   const files = await discoverSkillFiles(PKG_SKILLS_DIR)
-  const EXPECTED_SKILLS = [
-    'deep-interview', 'plan', 'ralplan', 'prometheus-strict',
-    'ralph', 'visual-ralph', 'autopilot', 'team', 'ultrawork', 'ultragoal', 'ultraqa',
-    'code-review', 'security-review', 'analyze', 'build-fix', 'tdd',
-    'ai-slop-cleaner', 'git-master', 'design',
-    'cancel', 'doctor', 'note', 'skill-authoring', 'ecomode',
-  ]
-  assert.ok(files.length >= EXPECTED_SKILLS.length, `至少应发现 ${EXPECTED_SKILLS.length} 个技能，实际 ${files.length}`)
+  // 弱守卫：discoverSkillFiles 对每个目录无条件返回 <dir>/SKILL.md，故只能证「无扁平 .md 混入」；
+  // 强断言落在本测试末尾的技能名集合相等与下方 provider.list() 的候选名集合相等。
+  assert.equal(files.length, dirs.length, `技能文件数应等于技能目录数（${dirs.length}）`)
   const names = new Set()
   for (const file of files) {
     const skill = await readSkillFile(file)
@@ -82,32 +78,34 @@ test('真实技能目录：全部技能被发现且 frontmatter 合法、kebab �
     names.add(skill.name)
     assert.ok(skill.content.length > 0, `正文非空：${skill.name}`)
   }
-  for (const expected of EXPECTED_SKILLS) {
-    assert.ok(names.has(expected), `应包含技能 ${expected}，实际：${[...names].join(', ')}`)
-  }
+  // 主断言（由目录派生，禁硬编码名单）：技能名集合必须精确等于技能目录集合
+  assert.deepEqual([...names].sort(), dirs, '技能名集合应等于技能目录集合')
 })
 
 test('提供方 list/get 契约：候选形状、惰性加载、身份校验', async () => {
+  const dirs = (await readdir(PKG_SKILLS_DIR, { withFileTypes: true })).filter((e) => e.isDirectory()).map((e) => e.name).sort()
   const provider = makeEmbeddedSkillsProvider({ roots: [PKG_SKILLS_DIR] })
   assert.equal(provider.name, OMDH_SKILLS_PROVIDER)
 
   const candidates = await provider.list()
-  const EXPECTED_SKILLS = [
-    'deep-interview', 'plan', 'ralplan', 'prometheus-strict',
-    'ralph', 'visual-ralph', 'autopilot', 'team', 'ultrawork', 'ultragoal', 'ultraqa',
-    'code-review', 'security-review', 'analyze', 'build-fix', 'tdd',
-    'ai-slop-cleaner', 'git-master', 'design',
-    'cancel', 'doctor', 'note', 'skill-authoring', 'ecomode',
-  ]
-  assert.ok(Array.isArray(candidates) && candidates.length >= EXPECTED_SKILLS.length)
+  assert.ok(Array.isArray(candidates), '候选集应为数组')
+  assert.equal(candidates.length, dirs.length, `候选数应等于技能目录数（${dirs.length}）`)
   const byName = new Map(candidates.map((c) => [c.name, c]))
-  for (const expected of EXPECTED_SKILLS) {
-    assert.ok(byName.has(expected), `候选目录应包含 ${expected}`)
-    assert.equal(byName.get(expected).provider, OMDH_SKILLS_PROVIDER)
-    assert.equal(byName.get(expected).source, 'omdsh')
-    assert.equal(byName.get(expected).rank, OMDH_SKILLS_RANK)
-    assert.deepEqual(byName.get(expected).invocation, { modelInvocable: true, userInvocable: true })
-    assert.ok(byName.get(expected).locator && typeof byName.get(expected).locator.path === 'string')
+  // 主断言（由目录派生，禁硬编码 24 项；缺任一目录即红）
+  assert.deepEqual([...byName.keys()].sort(), dirs, '候选技能名集合应等于技能目录集合')
+  // 非空洞反例自测：等值断言必须能捕获缺项
+  assert.throws(
+    () => assert.deepEqual([...byName.keys()].sort().slice(1), dirs, '候选集合缺项必须失败'),
+    /候选集合缺项必须失败/,
+    '等值断言必须能捕获缺项（非空洞自测）'
+  )
+  for (const name of dirs) {
+    assert.ok(byName.has(name), `候选目录应包含 ${name}`)
+    assert.equal(byName.get(name).provider, OMDH_SKILLS_PROVIDER)
+    assert.equal(byName.get(name).source, 'omdsh')
+    assert.equal(byName.get(name).rank, OMDH_SKILLS_RANK)
+    assert.deepEqual(byName.get(name).invocation, { modelInvocable: true, userInvocable: true })
+    assert.ok(byName.get(name).locator && typeof byName.get(name).locator.path === 'string')
   }
 
   const di = byName.get('deep-interview')

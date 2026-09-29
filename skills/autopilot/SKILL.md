@@ -6,6 +6,8 @@ argument-hint: "<想法 / issue / PRD / 需求产物>"
 
 # Autopilot（严格自主交付循环）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 目的
 
 非平凡工作的严格自主交付闭环，默认契约固定为：
@@ -26,7 +28,7 @@ code-review 或 ultraqa 不干净 → 带着发现回到 ralplan 重规划 → �
 
 1. **deep-interview（需求澄清闸）**：澄清意图/范围/非目标/约束/决策边界；产出 .omx/specs/deep-interview-{slug}.md（含访谈完成理由）。不清不往下走。
 2. **ralplan（共识规划闸）**：基于深访产物做预上下文摄取与共识规划；产出 .omx/plans/ 的 prd-*.md + test-spec-*.md + 持久化交接记录。**只有文件 ≠ 共识达成**；Architect→Critic 顺序评审（subagent + roles/ 提示词）是生命周期证据，执行授权 = 用户显式批准（--interactive 时）或用户在 autopilot 启动时已授权全程（此时记录授权依据）。评审缺失/被阻/不通过就停在 ralplan，不进 ultragoal。
-3. **ultragoal（持久实现+验证循环）**：只从已过闸的 ralplan 产物进入。用 DSH goal 工具建聚合目标（create_goal），.omx/ultragoal/ 台账（goals.json / ledger.jsonl）做检查点；实现、测试、构建/lint/typecheck 证据、清理与最终评审闸纪律都归它。故事明显受益于并行时才在故事内用 team（workflow 工具），leader 持有目标与台账。
+3. **ultragoal（持久实现+验证循环）**：只从已过闸的 ralplan 产物进入。用 DSH goal 工具建聚合目标（create_goal），.omx/ultragoal/ 台账（goals.json / ledger.jsonl）做检查点；实现、测试、构建/lint/typecheck 证据、清理与最终评审闸纪律都归它。故事明显受益于并行时才在故事内用 team（官方团队九工具 + 共享任务板；团队面未挂载时退 `workflow` 扇出作为降级层），leader 持有目标与台账。
 4. **code-review（合入就绪闸）**：对 ultragoal 产出的 diff/产物跑 code-review 技能（code-reviewer 子代理）。干净 = 推荐 APPROVE 且架构状态 CLEAR。不干净且是修复型问题 → 进入 rework（只修评审发现，修完重跑 code-review）；不干净且暴露计划/需求错误 → 回 ralplan（带 return_to_ralplan_reason 与发现）。
 5. **ultraqa（对抗 QA 闸）**：干净评审后，面向用户行为/CLI/集成面/回归风险跑 ultraqa 技能。纯文档/平凡非运行时改动可显式跳过（记录条件与证据）。发现问题 → 存 QA 结论 → 回 ralplan。
 

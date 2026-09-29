@@ -2,6 +2,24 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.5.0] - 2026-09-29
+
+### Added
+
+- **官方智能体团队原生化**：`team` 技能以团队九工具（`spawn_teammate` / `send_message` / `list_agents` / `wait_agent` / `interrupt_agent` / `team_task_create` / `team_task_list` / `team_task_get` / `team_task_update`）为首选通道；团队任务板（`team_task_*`，CAS `expected_revision`）是唯一任务台账，`.omx/**` 任务文件降为只读审计留档。四级降级阶梯 = 官方团队九工具 → `workflow` → `subagent`/`subagent_fork` → 会话内串行。新增 `skills/team/references/skill-dispatch.md`：26/26 技能调度矩阵（建议角色 / 并行性 / 写入范围策略 / 证据要求）。
+- `docs/capability-matrix.md`（R3）：每类可选能力的探测方式 / 已挂载时 / 未挂载时降级 / 判别陷阱（含 `send_message.target` 团队版 vs 旧全局 `agent_id`）。17 个技能与 3 个角色提示词（`roles/planner.md`、`roles/oracle.md`、`roles/momus.md`）加逐字「可选能力」降级指针；`code-review`/`ultraqa`/`ralplan`/`plan` 另加 `COND_REVIEW` 评审通道条件行。
+- `doctor` 第 5 体检面「可选能力探测（--capabilities）」（团队九工具 / `ralph` / `subagent` 系 / `workflow` / 动态插件 API `cordis_inspect_self`+`cordis_stop` / codex 系）+ `Capabilities:` 输出行；`cancel` 任务板只读收尾（`team_task_list` 未完成项 + `interrupt_agent`，不删任务、不写不删外部 runner 布局）；`ultragoal` 三层分工（goal 工具 = 目标状态、团队任务板 = 执行任务、`.omx/ultragoal/**` = 审计证据）。
+- `test/skills.test.mjs` 契约断言 TA-01…TA-06：团队九工具 + 四级降级次序、26/26 调度矩阵行锚定、能力矩阵 token、20 文件指针 + 同句降级规则、doctor/cancel/ultragoal 桥接、元数据与文档一致性；`test/provider.test.mjs` 技能集合改为目录派生 + 精确相等（新增技能不同步 README/矩阵即红）。
+
+### Changed
+
+- `package.json`：版本 1.4.0 → 1.5.0；`files` 增 `test` / `CHANGELOG.md` / `docs`；`dshWorkshop.compatibility.dshVersions` 追加 `0.2.0-rc.1`（保留 `0.1.0-rc.6`）；`capability.expected` 增团队见证句（九工具名册 + `skill` 工具加载 + `spawn_teammate`）。
+- README.md / README.zh.md 增团队调度与能力矩阵降级说明（技能表 26 项与「共 26 技能」计数不变）；`docs/awesome-dsh-plugin-entry.yml` 计数同步（`and 18 more` → `and 19 more`；`等 25 个技能` → `等 26 个技能`）。
+- **README.zh.md 本版本仍豁免全量同步**（承接 `[1.4.0]` 先例）：只把陈旧的「v0.1.0 pilot」句替换为「26 技能已交付 + 以 `README.md` 表格为准 + `docs/capability-matrix.md` 指针」，双语全表刷新仍登记为 follow-up（`test/skills.test.mjs` 只校验 README.md 技能表）。
+- **预设覆盖的升级注意事项（K2）**：`cordis.patch.yml` 的 `preset-cordis` 是**整份 `config` 覆盖**，会**遮蔽 DSH 升级新增的预设行**（升级带来的新插件 / 新工具行不会出现，可能静默缺失团队工具）。因此 DSH 升级后**必须复跑 `dsh --profile web --dump-config`**，与升级后的官方预设逐行 diff 并同步覆盖层后重启才生效。
+
+[1.5.0]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v1.5.0
+
 ## [1.4.0] - 2026-09-07
 
 ### Added

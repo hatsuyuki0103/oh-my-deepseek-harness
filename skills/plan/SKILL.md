@@ -6,6 +6,9 @@ argument-hint: "[--direct|--consensus|--interactive|--deliberate|--review] <任�
 
 # Plan（规划）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+> 评审通道（按名册实况）：名册含 `spawn_teammate`（**仅 Lead 可调用**；teammate 需先请 Lead 建队）→ 团队双通道（两名 teammate 各担一通道，`wait_agent` 收证据）；否则名册含 `subagent` → 子代理双通道；否则报告 `independent review unavailable`，不批准。
+
 ## 目的
 
 Plan 通过智能交互产出全面、可执行的工作计划：宽泛请求自动进入访谈，具体请求直接规划；共识模式（consensus）用 Planner→Architect→Critic 循环 + RALPLAN-DR 结构化审议做多视角校验；评审模式（review）让 Critic 评估已有计划。
@@ -14,7 +17,7 @@ Plan 通过智能交互产出全面、可执行的工作计划：宽泛请求自
 
 使用：用户想先规划再实现；模糊想法需要结构化需求收集；要评审已有计划（"review this plan" / --review）；要多视角共识（--consensus / "ralplan"）；任务宽泛、写码前需要定界。
 
-不用：用户要端到端自动执行（用 autopilot）；任务清晰想直接写码（用 ralph 工具或直接干）；简单问题（直接回答）；单点修复范围明显（跳过规划直接做）。
+不用：用户要端到端自动执行（用 autopilot）；任务清晰想直接写码（用 ralph 工具，未挂载时直接干或走会话内纪律）；简单问题（直接回答）；单点修复范围明显（跳过规划直接做）。
 
 ## 模式选择
 
@@ -60,8 +63,8 @@ Plan 通过智能交互产出全面、可执行的工作计划：宽泛请求自
 
 1. Planner（roles/planner.md）产出初始计划 + 紧凑 RALPLAN-DR 摘要（Principles 3-5 条、Decision Drivers 前 3、Viable Options >= 2 或显式否决理由；deliberate 模式另加 3 场景 pre-mortem 与 单元/集成/e2e/可观测 扩展测试计划）。
 2. --interactive 时用 ask_user_question 呈现草稿 + 摘要，选项：Proceed to review / Request changes / Skip review；非交互则自动进入评审。
-3. Architect（roles/architect.md 子代理）评审架构合理性：必须给钢人反方论、至少一个真实权衡张力、可能的综合路径。**等它完成再进入第 4 步，绝不并行**。
-4. Critic（roles/critic.md 子代理）按质量标准评审：原则-选项一致性、备选探索公平性、风险缓解清晰度、验收可测性、验证步骤具体性。**只允许在第 3 步完成后运行**。
+3. Architect（roles/architect.md 子代理）评审架构合理性：必须给钢人反方论、至少一个真实权衡张力、可能的综合路径。**等它完成再进入第 4 步，绝不并行**。（评审通道按名册实况：团队双通道优先 → `subagent` 子代理 → 两者皆无则报告 `independent review unavailable`，见 `docs/capability-matrix.md`。）
+4. Critic（roles/critic.md 子代理）按质量标准评审：原则-选项一致性、备选探索公平性、风险缓解清晰度、验收可测性、验证步骤具体性。**只允许在第 3 步完成后运行**。（通道同上：团队双通道优先，`subagent` 未挂载时按矩阵降级并标注。）
 5. 重审循环（最多 5 次）：Critic 非 OKAY → 收集 Architect+Critic 反馈 → Planner 修订 → 回到 Architect → 回到 Critic，直到 OKAY 或到 5 次上限（上限时把最好版本交给用户）。
 6. 合并评审通过后的所有改进建议进计划文件；最终共识输出必须含 **ADR** 段（Decision / Drivers / Alternatives considered / Why chosen / Consequences / Follow-ups）。
 7. --interactive 时用 ask_user_question 呈交最终计划：批准进入执行 / 请求修改 / 拒绝。非交互则输出最终计划并停止，**绝不自动执行**。
@@ -77,7 +80,7 @@ Plan 通过智能交互产出全面、可执行的工作计划：宽泛请求自
 ### 计划输出格式
 
 - Requirements Summary、可测 Acceptance Criteria、Implementation Steps（带文件引用，步数匹配范围）、Risks and Mitigations、Verification Steps。
-- 共识模式另加：RALPLAN-DR 摘要、ADR、DSH 执行交接指引（subagent 名册 / workflow 并行方案 / ralph 工具回退 / goal 工具承接）。
+- 共识模式另加：RALPLAN-DR 摘要、ADR、DSH 执行交接指引（subagent 名册 / workflow 并行方案 / ralph 工具（缺省时回退会话内 Ralph，见矩阵） / goal 工具承接）。
 - deliberate 共识模式另加：Pre-mortem（3 场景）+ 扩展测试计划。
 
 计划存 `.omx/plans/`，草稿存 `.omx/drafts/`。

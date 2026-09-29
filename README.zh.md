@@ -6,9 +6,9 @@ Adapted from the skill designs of [oh-my-codex](https://github.com/Yeachan-Heo/o
 
 - `omx question` → `ask_user_question` structured per-round questioning
 - Codex goal mode → DSH `create_goal` / `get_goal` / `update_goal`
-- native subagent role routing → `subagent` / `subagent_fork` + role prompts
-- tmux team orchestration → `workflow` tool + background jobs
-- `omx ralph` CLI → DSH native `ralph` tool
+- native subagent role routing → `subagent` / `subagent_fork` + role prompts (when the `subagent` surface is preset-disabled or unmounted, reviews/parallelism fall back to the teammate dual channel — `spawn_teammate` + `wait_agent` for evidence — and only then to `workflow` fan-out; see `docs/capability-matrix.md`)
+- tmux team orchestration → official agent team first (`spawn_teammate` + nine team tools + task board as the single ledger): ordered four-level ladder by the live roster = ① nine team tools → ② `workflow` script fan-out → ③ `subagent`/`subagent_fork` one-shot subagents → ④ in-session serial; use the first available, never skip a level; see `docs/capability-matrix.md`
+- `omx ralph` CLI → DSH native `ralph` tool (when preset-disabled, degrade per `docs/capability-matrix.md` to the in-session Ralph discipline)
 - `.omx/` workspace conventions (context / interviews / specs / plans) preserved
 
 **Vision is supported**: `visual-ralph` (implement or restyle frontend UI against an approved reference / URL baseline, with DSH vision model + `read_image` structured verdict and pixel iteration, leaving reusable design tokens). visual-verdict / frontend-ui-ux / vision are OMX-internal mechanisms and were not ported standalone; hud is terminal-HUD orchestration and does not depend on a vision model — not included yet.
@@ -19,7 +19,7 @@ Adapted from the skill designs of [oh-my-codex](https://github.com/Yeachan-Heo/o
 |---|---|
 | `deep-interview` | Socratic deep interview: per-round structured questions + ambiguity scoring, converging to an executable spec |
 
-(v0.1.0 pilot; ralplan / ralph / plan / autopilot / team / ultrawork / code-review / security-review / analyze / tdd / visual-ralph ... are on the roadmap.)
+All 26 skills are shipped — treat the `README.md` table as the source of truth for the full catalog, and see `docs/capability-matrix.md` for optional-capability probes and the four-level degradation ladder.
 
 ## Install
 

@@ -16,6 +16,12 @@
 - 先查后问：存在最安全合理解释就先按它做；只有无法推进或涉及破坏性/凭证门控/外部生产/实质改范围时才问一个精确问题。
 - 明确、低风险、可回退的下一步自动继续；不为了确认而停下。
 
+## 写入纪律（任务板）
+
+- 动手写文件前先 `team_task_get` 取任务最新 `expected_revision`，用 `team_task_update(action:'claim', expected_revision)` 取得 owner，并用 `team_task_update(action:'edit', write_scopes:[…])` 登记写入范围；
+- `write_scopes` **只警告、不锁定、不构成写入授权**（共享 cwd、无文件锁）：绝不写登记范围之外的文件；需要改他人文件或发现范围冲突时，`send_message` 报告 Lead 由其串行化，**不自行越界**；
+- 完成后 `team_task_update(action:'complete')`（revision 陈旧先重取）；团队任务板未挂载时按 `docs/capability-matrix.md` 降级并在报告中标注。
+
 ## 执行循环
 
 1. 勘察相关文件、模式、测试与约束；

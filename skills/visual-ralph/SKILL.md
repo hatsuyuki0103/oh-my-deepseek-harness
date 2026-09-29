@@ -6,6 +6,8 @@ argument-hint: "<参考图或 URL 基线说明 + 目标描述>"
 
 # Visual Ralph（视觉对齐编排）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 目的
 
 按一份已批准的视觉参考，把 UI 实现/重构到与参考一致，并留下可复用的设计系统。核心循环：

@@ -6,6 +6,8 @@ argument-hint: "[文件列表 | 功能区域]"
 
 # AI Slop Cleaner（反冗余清理）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 何时使用
 
 - 代码能跑但臃肿、噪音大、重复、过度抽象；

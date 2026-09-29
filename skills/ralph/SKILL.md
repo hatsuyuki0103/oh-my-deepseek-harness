@@ -6,11 +6,13 @@ argument-hint: "[--prd|--no-deslop] <任务描述>"
 
 # Ralph（持久执行闭环）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 目的
 
 Ralph 是一个持续到完成并验证的持久循环：任务做完整、测试不偷删、每次完成都拿新鲜证据 + 架构师子代理复核。DSH 环境下有两个等价引擎，按场景选：
 
-- **DSH 原生 `ralph` 工具**：用户明确要求 Ralph 循环时用它——每个轮次开全新子代理、以共享工作区为长期记忆、轮次间只传结构化报告；适合跨多轮、需要持久性的任务。
+- **DSH 原生 `ralph` 工具**：用户明确要求 Ralph 循环时用它——每个轮次开全新子代理、以共享工作区为长期记忆、轮次间只传结构化报告；适合跨多轮、需要持久性的任务。（本 profile 的 live preset 通常**未挂载**该工具；缺省时改走下一行的「会话内 Ralph 纪律」，见 `docs/capability-matrix.md`。）
 - **会话内 Ralph 纪律**：不满足 ralph 工具条件（或只需一轮即可完成）时，在会话内执行同一套纪律：todo 清单 + 后台任务 + 新鲜验证 + 独立复核。
 
 ## 何时使用 / 何时不用

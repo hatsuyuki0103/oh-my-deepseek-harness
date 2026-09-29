@@ -6,6 +6,8 @@ argument-hint: "[--quick|--standard|--deep] <想法或模糊描述>"
 
 # Deep Interview（深度访谈）
 
+> 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
+
 ## 目的
 
 深度访谈是一个「意图优先」的苏格拉底式澄清循环，发生在任何规划或实现之前。它通过定向提问把模糊想法变成可执行规格：为什么想要这个改动、范围该到哪为止、什么必须排除在外、哪些决定代理可以自行拍板、哪些必须问用户。
@@ -140,8 +142,8 @@ max rounds 是硬上限，不是目标轮数。没有达到目标轮数之前，
 - 需要架构/测试形态审查 → ralplan（或用 plan --consensus），产物 .omx/plans/prd-*.md + test-spec-*.md；
 - 规格已足够、直接规划+执行 → autopilot；
 - 长期可追踪目标 → DSH goal 工具（create_goal），目标完成验收后 update_goal 标记 complete；
-- 用户明确要求持久单主闭环 → DSH 原生 ralph 工具；
-- 大规模多路并行 → team / ultrawork（基于 workflow 工具）；
+- 用户明确要求持久单主闭环 → DSH 原生 ralph 工具（仅当名册含 `ralph` 工具；否则走会话内 Ralph 纪律，见矩阵）；
+- 大规模多路并行 → team / ultrawork（团队九工具优先；缺失时 `workflow`；两皆缺失则串行分批）；
 - 仍不够清晰 → 回到访谈循环继续收敛（refine）。
 
 **残余风险规则**：提前退出 / 硬停 / 超阈值带警告继续时，必须在交接物里写明残余风险，让下游知道继承了部分澄清的简报。
@@ -155,7 +157,7 @@ max rounds 是硬上限，不是目标轮数。没有达到目标轮数之前，
 - 状态：.omx/interviews/{slug}-{timestamp}.md（进行中每轮追加）+ .omx/specs/deep-interview-{slug}.md（最终）。
 - 快照：.omx/context/{slug}-{timestamp}.md。
 - 交接目标技能：skill 工具按名加载（ralplan / plan / autopilot / team / ultrawork / code-review 等）。
-- 长期目标：create_goal / get_goal / update_goal；持久闭环：ralph 工具。
+- 长期目标：create_goal / get_goal / update_goal；持久闭环：ralph 工具（未挂载时用会话内 Ralph 纪律）。
 
 ## 升级与停止条件
 
@@ -180,7 +182,7 @@ max rounds 是硬上限，不是目标轮数。没有达到目标轮数之前，
 - [ ] 模糊/冲突术语按仓库语言压测过
 - [ ] 边界歧义影响实现时用过场景压测
 - [ ] 持久化文档建议（如有）明确 opt-in 且公开安全
-- [ ] 交接选项已给（ralplan / autopilot / ralph 工具 / goal 工具 / team / refine）
+- [ ] 交接选项已给（ralplan / autopilot / ralph 工具（名册缺省时列会话内 Ralph 纪律） / goal 工具 / team / refine）
 - [ ] 本模式内未直接实现任何代码
 
 ## 恢复
@@ -189,4 +191,4 @@ max rounds 是硬上限，不是目标轮数。没有达到目标轮数之前，
 
 ## 推荐三阶段管线
 
-    deep-interview（清晰度闸）-> ralplan（可行性/架构闸）-> autopilot 或 ralph 工具（执行+验证闸）
+    deep-interview（清晰度闸）-> ralplan（可行性/架构闸）-> autopilot 或（名册含则）`ralph` 工具；否则走会话内执行（执行+验证闸）
