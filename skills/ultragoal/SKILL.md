@@ -48,7 +48,7 @@ Ultragoal 把一份简报变成仓库内持久工件（.omx/ultragoal/brief.md�
 
 ## 与 Team 叠加
 
-故事明显受益于并行时：ultragoal 保持 leader 所有（goals.json + ledger.jsonl），team（官方团队九工具优先：`team_task_create`/`team_task_list`/`team_task_update` 派活 + `spawn_teammate` 组队；名册未挂载九工具时降级 `workflow`）做并行执行、交任务/证据状态。worker 不碰目标状态、不建台账、不 checkpoint；leader 用 team 终验证据 + 新鲜 get_goal 快照做 checkpoint。任务态只经 `team_task_update` 变更，`team_task_list` 是唯一任务现状视图。
+**默认组队**（团队面可用即组队，不组队必须显式记录理由）：ultragoal 保持 leader 所有（goals.json + ledger.jsonl），team（官方团队九工具优先：`team_task_create`/`team_task_list`/`team_task_update` 派活 + `spawn_teammate` 组队；`spawn_teammate` 仅 Lead 可用；名册未挂载九工具时降级 `workflow`）做并行执行、交任务/证据状态。worker 不碰目标状态、不建台账、不 checkpoint；leader 用 team 终验证据 + 新鲜 get_goal 快照做 checkpoint。任务态只经 `team_task_update` 变更，`team_task_list` 是唯一任务现状视图。
 
 ## 最终清理/评审闸（最后一个故事完成前必跑）
 
@@ -77,4 +77,4 @@ Ultragoal 把一份简报变成仓库内持久工件（.omx/ultragoal/brief.md�
 - [ ] 最终故事通过清理/评审闸（deslop + 回归验证 + 不变量审计 + 独立评审：团队双通道 `spawn_teammate`+`wait_agent`，未挂载时为双 subagent 路径）
 - [ ] 全部完成后 update_goal(action complete) + complete 快照最终 checkpoint
 - [ ] ledger 无缺口（成功/失败/被阻都有记录）
-- [ ] worker（team 叠加时）未碰目标状态，且未写 `.omx/ultragoal/**`；任务现状以 `list_agents` + `team_task_list` 见证
+- [ ] worker（默认组队时）未碰目标状态，且未写 `.omx/ultragoal/**`；任务现状以 `list_agents` + `team_task_list` 见证

@@ -19,7 +19,7 @@ Adapted from the skill designs of [oh-my-codex](https://github.com/Yeachan-Heo/o
 |---|---|
 | `deep-interview` | Socratic deep interview: per-round structured questions + ambiguity scoring, converging to an executable spec |
 
-All 26 skills are shipped — treat the `README.md` table as the source of truth for the full catalog, and see `docs/capability-matrix.md` for optional-capability probes and the four-level degradation ladder.
+All 24 skills are shipped — treat the `README.md` table as the source of truth for the full catalog, and see `docs/capability-matrix.md` for optional-capability probes and the four-level degradation ladder. v2.0.1 highlights: the two media-generation skills were removed (breaking change — the most convenient recovery source is the pre-deletion commit `cc4605f`, whose ancestors still carry both skills in one shot; per skill, `e868005` = Aliyun and `f9e0304` = Tencent, the latter already including Aliyun), `autopilot` now defaults to agent-team collaboration (`spawn_teammate` + `team_task_*` board, four-level fallback), and `skills/team/references/skill-dispatch.md` carries the 24-skill dispatch matrix.
 
 ## Install
 

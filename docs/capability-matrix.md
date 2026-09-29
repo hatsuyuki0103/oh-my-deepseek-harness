@@ -31,7 +31,7 @@
 - `queued` 是**已持久化**的投递回执，绝不重发（重发会产生重复投递）。
 - `write_scopes` **只警告不锁定**（advisory）：同一文件绝不并发写，写前先读、遇 FS 冲突重新读再改。
 - `team_task_update` 以 `expected_revision` 做 CAS；版本不符必须重新 `team_task_get` 再改。
-- 团队名额上限 `maxMembers: 8`（任务上限 `maxTasks: 256` 沿用假设 A1，schema 变更需复核本矩阵）。
+- 团队名额上限 = `maxMembers`（live 生效值 **8**；**仅计 teammate**、Lead 不计入；插件默认 16，实测第 9 名 teammate 创建被拒；名额含既有非活跃成员也占位——不要指望靠等成员结束来腾位）；任务上限 `maxTasks: 256` 沿用假设 A1，schema 变更需复核本矩阵。
 - 一次性子代理看不到任务板；**工具出现 ≠ 团队成员**。
 - 本 profile 的 live preset 实测未挂载 `ralph` 工具，且团队九工具与旧全局委派面在重启前并存。
 

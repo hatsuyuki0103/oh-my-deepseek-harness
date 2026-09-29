@@ -2,6 +2,21 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.0.1] - 2026-09-29
+
+### Removed
+
+- **媒体生成技能整体移除（破坏性变更）**：`aliyun-media`（阿里云 Token Plan 生图 / 生视频 / 视频编辑）与 `tencent-media`（腾讯云 TokenHub 生图 / 生视频）两个技能目录（含 `scripts/*.mjs`、技能内 README）与专属测试 `test/aliyun-media.test.mjs` / `test/tencent-media.test.mjs` 全部删除；README 技能表与计数、`docs/awesome-dsh-plugin-entry.yml`、`skills/team` 调度矩阵同步收敛为 24 技能，删除锁定由契约断言 TA-07 守卫。
+- **恢复指引**：需要媒体技能时从 git 历史取回——**最便捷恢复源**是删除前的提交 `cc4605f`（`cc4605f` 之前的提交仍同时含 `aliyun-media` 与 `tencent-media`，可一次取回两技能）；若按单个技能回溯，则 `e868005` 为 `aliyun-media`、`f9e0304` 为 `tencent-media`（`f9e0304` 同时已含 `aliyun-media`）。恢复后必须同时补回 README 表行与计数、调度矩阵行与测试文件，否则契约测试即红。
+
+### Changed
+
+- **`autopilot` 默认组队**：新增「团队协作默认策略（Agent Teams 优先）」小节——进入 ultragoal 前做名册自检，名册含 `spawn_teammate` / `wait_agent` / `team_task_*` 即**默认组队**（共享任务板为唯一台账），仅在「故事确实不可并行」或「团队面未挂载」时不组队且必须显式记录理由；`ultragoal` 同步为「默认组队时」口径。
+- **README（中 / 英）与元数据刷新到 v2.0.1**：技能表 26 → 24 行并去掉媒体品类；新增 v2.0.1 亮点段（媒体技能移除 + 恢复指引 / `autopilot` 默认组队 / 能力矩阵 / 调度矩阵 / 版本）；README.zh.md 补 v2.0.1 亮点句与能力矩阵指针（仍不重写全表，follow-up）；`docs/awesome-dsh-plugin-entry.yml` 计数 `and 19 more` → `and 17 more`、`等 26 个技能` → `等 24 个技能`，描述补「autopilot 默认组队（Agent Teams）」。
+- **版本跳跃说明**：`1.5.0` → `2.0.1`——整体移除两个公开技能属破坏性变更，按语义化版本将主版本号跳到 2；发布形态为 GitHub Release `v2.0.1`（tarball 指向 `releases/latest/download/oh-my-deepseek-harness.tgz`）。
+
+[2.0.1]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v2.0.1
+
 ## [1.5.0] - 2026-09-29
 
 ### Added

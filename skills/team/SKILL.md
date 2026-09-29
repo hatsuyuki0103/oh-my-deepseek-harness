@@ -31,7 +31,7 @@ DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、�
 3. **第 3 级 · `subagent` / `subagent_fork`**：`workflow` 也不可用时 → 直接一对多派一次性子代理，leader 自己串起各阶段。
 4. **第 4 级 · 会话内串行**：以上通道都不可用时 → leader 在会话内串行执行，并在正文显式声明「本次落在第 4 级」与原因。
 
-判定依据是**可用性实况**（名册/探测结果），不是任务规模；能建队就必须建队。
+判定依据是**可用性实况**（名册/探测结果），不是任务规模；在 autopilot/ultragoal 的**默认组队**阶段（见 `skills/autopilot/SKILL.md`「团队协作默认策略」），团队面可用就必须建队——缺省即组队，只有「故事确实不可并行」或「团队面未挂载」才降级并显式记录理由。
 
 ### 兜底细则：`workflow` 判定（第 2 级内部）
 
@@ -94,12 +94,11 @@ DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、�
 
 ## 技能→teammate 调度矩阵（摘要）
 
-完整 26 行表在 [`references/skill-dispatch.md`](references/skill-dispatch.md)，与本表同源（改一处必须同步另一处）。
+完整 24 行表在 [`references/skill-dispatch.md`](references/skill-dispatch.md)，与本表同源（改一处必须同步另一处）。
 
 | 技能 | 建议角色 | 并行性 | 写入范围策略 | 证据要求 |
 |---|---|---|---|---|
 | `ai-slop-cleaner` | executor+verifier | staged | 每 lane 独占文件 | `node --test` + 清理前后 diff |
-| `aliyun-media` | executor | serial | `skills/aliyun-media/**` | CLI dry-run（零付费） |
 | `analyze` | analyst | fan-out | 只读 | file:line 清单 |
 | `autopilot` | planner+executor+verifier | staged | 阶段独占、lead 汇总 | 各阶段闸输出 |
 | `build-fix` | executor | serial | 受影响模块独占 | 复现命令 + 修复后同命令 |
@@ -119,7 +118,6 @@ DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、�
 | `skill-authoring` | executor+test-engineer | staged | `skills/<name>/**` 独占（**本轮禁止新增目录**） | 契约测试红→绿 |
 | `tdd` | test-engineer+executor | staged | 测试/实现文件分 lane | 红→绿输出 |
 | `team` | lead+verifier | fan-out/staged | 每 teammate 独占文件集 | `team_task_list`+`list_agents` 见证 |
-| `tencent-media` | executor | serial | `skills/tencent-media/**` | CLI dry-run（零付费） |
 | `ultragoal` | lead(目标所有人)+executor lanes | staged | worker 不碰 `.omx/ultragoal` | `ledger.jsonl` + `get_goal` 快照 |
 | `ultraqa` | executor+architect | staged 循环 | 每轮独占修复切片 | 场景矩阵 + 退出码 |
 | `ultrawork` | executor lanes | fan-out | 每 lane 独占文件 | 验收命令输出 |
@@ -138,7 +136,7 @@ DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、�
 - 长期目标台账归 ultragoal（goal 工具 + .omx/ultragoal/）；team 只做并行执行、交证据。
 - 三层分工：goal 工具 = 目标状态、团队任务板 = 执行任务、`.omx/ultragoal/**` = 审计证据，三层不互相替代。
 - worker 不碰目标状态、不建台账、不 checkpoint；leader 用 team 终验证据 + 新鲜 get_goal 快照做 checkpoint 与最终 update_goal。
-- team 不自动从 ultragoal 启动；两者叠加只在 leader 显式决策时发生。
+- **本技能自身从不自启动**：`team` 不会自己从 ultragoal 启动，只在 leader（autopilot/ultragoal 流程或用户）明确决策后被调用执行；但 ultragoal 阶段**默认组队**（团队面可用即组队，见 `skills/autopilot/SKILL.md`「团队协作默认策略」与 `skills/ultragoal/SKILL.md`），「默认组队」是调用方的缺省策略，不是本技能的自动触发。
 - 收口见证：以 `team_task_list`（任务态）与 `list_agents`（名册实况）为准。
 
 ## 生命周期

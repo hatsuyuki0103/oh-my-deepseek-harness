@@ -225,10 +225,9 @@ const ROLE_VOCAB = ['analyst', 'architect', 'code-reviewer', 'critic', 'executor
 const ROLE_QUALIFIERS = ['lanes']   // PRD 冻结行的量词（`executor lanes`），不是角色名
 
 // round-3 B2 / round-4：冻结逐行映射（列 2/3/4/5 = 建议角色 / 并行性 / 写入范围 / 证据要求），逐字取自
-// PRD v3.1 §3-WS-A「矩阵内容（26 行，本 PRD 定稿，执行者照抄）」；行体对调 / 首列改名 / 语义反转 / 第 5 列漂移都必须红。
+// PRD v3.1 §3-WS-A「矩阵内容」定稿表（v2.0.1 起 24 行，行数由 skills/ 目录数决定）；行体对调 / 首列改名 / 语义反转 / 第 5 列漂移都必须红。
 const CANONICAL_MATRIX = {
   'ai-slop-cleaner': ['executor+verifier', 'staged', '每 lane 独占文件', '`node --test` + 清理前后 diff'],
-  'aliyun-media': ['executor', 'serial', '`skills/aliyun-media/**`', 'CLI dry-run（零付费）'],
   'analyze': ['analyst', 'fan-out', '只读', 'file:line 清单'],
   'autopilot': ['planner+executor+verifier', 'staged', '阶段独占、lead 汇总', '各阶段闸输出'],
   'build-fix': ['executor', 'serial', '受影响模块独占', '复现命令 + 修复后同命令'],
@@ -248,7 +247,6 @@ const CANONICAL_MATRIX = {
   'skill-authoring': ['executor+test-engineer', 'staged', '`skills/<name>/**` 独占（**本轮禁止新增目录**）', '契约测试红→绿'],
   'tdd': ['test-engineer+executor', 'staged', '测试/实现文件分 lane', '红→绿输出'],
   'team': ['lead+verifier', 'fan-out/staged', '每 teammate 独占文件集', '`team_task_list`+`list_agents` 见证'],
-  'tencent-media': ['executor', 'serial', '`skills/tencent-media/**`', 'CLI dry-run（零付费）'],
   'ultragoal': ['lead(目标所有人)+executor lanes', 'staged', 'worker 不碰 `.omx/ultragoal`', '`ledger.jsonl` + `get_goal` 快照'],
   'ultraqa': ['executor+architect', 'staged 循环', '每轮独占修复切片', '场景矩阵 + 退出码'],
   'ultrawork': ['executor lanes', 'fan-out', '每 lane 独占文件', '验收命令输出'],
@@ -260,9 +258,9 @@ const assertDispatchMatrix = (md, label, dirs) => {
   assert.ok(md.includes('| 技能 | 建议角色 | 并行性 | 写入范围策略 | 证据要求 |'), `${label} 缺少表头`)
   const rows = md.split('\n').filter((l) => /^\|\s*`[a-z0-9-]+`\s*\|/.test(l))
   const names = rows.map((l) => l.match(/^\|\s*`([^`]+)`/)[1])
-  assert.equal(rows.length, 26, `${label} 数据行应为 26（实际 ${rows.length}）`)
+  assert.equal(rows.length, dirs.length, `${label} 数据行应为 ${dirs.length}（实际 ${rows.length}）`)
   assert.deepEqual([...names].sort(), dirs, `${label} 技能集合应等于 skills 目录集合`)
-  assert.deepEqual(Object.keys(CANONICAL_MATRIX).sort(), dirs, 'PRD 冻结映射必须恰好覆盖 26 个技能目录')
+  assert.deepEqual(Object.keys(CANONICAL_MATRIX).sort(), dirs, `PRD 冻结映射必须恰好覆盖 ${dirs.length} 个技能目录`)
   for (const r of rows) {
     // round-2 修复：旧 `cells.includes('|')` 在 split 后恒假（死断言）。裸/转义半角 | 都会撑破列，
     // 故先在原行上统计「未转义半角 |」——5 列行必须恰 6 个——再切格。
@@ -358,7 +356,10 @@ test('team 技能团队原生化：九工具 + 四级降级次序 + 无失效前
   }
 })
 
-test('技能调度矩阵：26/26 行锚定覆盖（SKILL.md 正文 + references 全表）', async () => {
+// 顶层 await：标题与计数按 skills/ 目录数动态生成（不再硬编码任何数字）
+const SKILL_COUNT = (await skillDirs()).length
+
+test(`技能调度矩阵：${SKILL_COUNT}/${SKILL_COUNT} 行锚定覆盖（SKILL.md 正文 + references 全表）`, async () => {
   const dirs = await skillDirs()
   const teamMd = await readFile(TEAM_SKILL_PATH, 'utf8')
   assert.ok(teamMd.includes('| 技能 | 建议角色 | 并行性 | 写入范围策略 | 证据要求 |'), 'team SKILL.md 缺少调度矩阵表')
@@ -473,10 +474,10 @@ test('团队桥接：doctor 探测面与动态插件降级 / cancel 任务板收
   }
 })
 
-test('元数据与文档一致性：version 1.5.0 / files / dshVersions / capability 见证 / CHANGELOG / docs entry / README.zh', async () => {
+test('元数据与文档一致性：version 2.0.1 / files / dshVersions / capability 见证 / CHANGELOG / docs entry / README.zh', async () => {
   const pkgRaw = await readFile(path.join(PKG_ROOT, 'package.json'), 'utf8')
   const pkg = JSON.parse(pkgRaw)
-  assert.equal(pkg.version, '1.5.0')
+  assert.equal(pkg.version, '2.0.1')
   for (const f of ['test', 'CHANGELOG.md', 'docs']) {
     assert.ok(pkg.files.includes(f), `package.json files 应含 ${f}（实际：${JSON.stringify(pkg.files)}）`)
   }
@@ -485,11 +486,12 @@ test('元数据与文档一致性：version 1.5.0 / files / dshVersions / capabi
   assert.ok(pkgRaw.includes('spawn_teammate'), 'package.json 原文应含 spawn_teammate 能力见证（L5）')
 
   const changelog = await readFile(path.join(PKG_ROOT, 'CHANGELOG.md'), 'utf8')
-  assert.ok(changelog.includes('## [1.5.0]'), 'CHANGELOG 应含 ## [1.5.0]')
-  assert.ok(changelog.includes('releases/tag/v1.5.0'), 'CHANGELOG 应含 releases/tag/v1.5.0')
+  assert.ok(changelog.includes('## [2.0.1]'), 'CHANGELOG 应含 ## [2.0.1]')
+  assert.ok(changelog.includes('releases/tag/v2.0.1'), 'CHANGELOG 应含 releases/tag/v2.0.1')
+  assert.ok(changelog.includes('## [1.5.0]'), 'CHANGELOG 应保留 ## [1.5.0] 历史段（锁历史不丢）')
 
   const readme = await readFile(README_PATH, 'utf8')
-  assert.ok(readme.includes('共 26 技能'), 'README.md 应含「共 26 技能」（回归项）')
+  assert.ok(readme.includes('共 24 技能'), 'README.md 应含「共 24 技能」')
   assert.ok(readme.includes('docs/capability-matrix.md'), 'README.md 应含能力矩阵指针')
 
   const readmeZh = await readFile(path.join(PKG_ROOT, 'README.zh.md'), 'utf8')
@@ -497,6 +499,129 @@ test('元数据与文档一致性：version 1.5.0 / files / dshVersions / capabi
   assert.equal(readmeZh.includes('v0.1.0 pilot'), false, 'README.zh.md 不得含陈旧「v0.1.0 pilot」句')
 
   const entry = await readFile(path.join(PKG_ROOT, 'docs', 'awesome-dsh-plugin-entry.yml'), 'utf8')
-  assert.ok(entry.includes('and 19 more'), 'awesome entry 应含 and 19 more')
-  assert.ok(entry.includes('26 个技能'), 'awesome entry 应含 26 个技能')
+  assert.ok(entry.includes('and 17 more'), 'awesome entry 应含 and 17 more')
+  assert.ok(entry.includes('24 个技能'), 'awesome entry 应含 24 个技能')
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
+// omdsh 收敛 v2.0.1 契约断言 TA-07 / TA-07b / TA-08
+// 冻结真源：.omx/plans/test-spec-omdsh-media-drop-autoteam.md §2
+// 自指修复：needle 一律运行时拼接（源码内不出现连续被禁字面量）；TA-07 显式排除本测试文件自身；
+// CHANGELOG.md 为历史豁免，不入任何扫描面。
+// ─────────────────────────────────────────────────────────────────────────────
+
+// 被删技能名：运行时拼接
+const MEDIA_NEEDLES = ['aliyun', 'tencent'].map((p) => [p, 'media'].join('-'))
+
+const walkFiles = async (dir, filter) => {
+  const out = []
+  for (const e of await readdir(dir, { withFileTypes: true })) {   // M2：readdir 失败直接抛错，不静默降级为空
+    const abs = path.join(dir, e.name)
+    if (e.isDirectory()) out.push(...(await walkFiles(abs, filter)))
+    else if (e.isFile() && filter(abs)) out.push(abs)
+  }
+  return out
+}
+
+test('TA-07 删除锁定：媒体技能名在文档/技能/测试面清零（含本测试文件）', async () => {
+  // M1：不再排除本文件——needle 运行时拼接，本文件不可能命中；排除只会把最大文件移出锁面
+  const refs = await referenceFiles()
+  const skillAll = await walkFiles(SKILLS_DIR, () => true)                    // M3：skills/** 全部文件（含 references）
+  const skillDocs = skillAll.filter((f) => path.basename(f) === 'SKILL.md')
+  const docsAll = await walkFiles(path.join(PKG_ROOT, 'docs'), () => true)
+  const testAll = await walkFiles(path.join(PKG_ROOT, 'test'), (f) => f.endsWith('.mjs'))
+  const rolesAll = await walkFiles(ROLES_DIR, (f) => f.endsWith('.md'))       // R3：roles/**/*.md 与 package.json 同锁
+  // M2/R3：逐子树下限，禁止扫描面静默收缩（过滤词打错 → 此处必红，而不是空转通过）
+  assert.equal(skillDocs.length, SKILL_COUNT, `skills/**/SKILL.md 应恰为 ${SKILL_COUNT} 个（实际 ${skillDocs.length}）`)
+  assert.equal(skillAll.length, skillDocs.length + refs.length, `skills/** 全量应为 SKILL.md + references 之和（实际 ${skillAll.length}）`)
+  assert.ok(refs.length > 0 && refs.every((f) => skillAll.includes(f)), 'skills/** 扫描面必须覆盖 references 文件')
+  assert.ok(docsAll.length >= 2, `docs/** 扫描面不得少于 2 个文件（实际 ${docsAll.length}）`)
+  assert.ok(testAll.length >= 1, `test/**/*.mjs 扫描面不得少于 1 个文件（实际 ${testAll.length}）`)
+  assert.ok(rolesAll.length >= 1, `roles/**/*.md 扫描面不得为空（实际 ${rolesAll.length}）`)
+  const scope = [README_PATH, path.join(PKG_ROOT, 'README.zh.md'), path.join(PKG_ROOT, 'package.json'),
+    ...docsAll, ...skillAll, ...testAll, ...rolesAll]
+  for (const abs of scope) {
+    const content = await readFile(abs, 'utf8')
+    for (const needle of MEDIA_NEEDLES) {
+      assert.equal(content.includes(needle), false, `不得残留已删除的技能名（${needle}）：${path.relative(PKG_ROOT, abs)}`)
+    }
+  }
+})
+
+// 计数残留正则：源码内运行时拼接（与 test-spec §2 冻结模式等价；此处不复制字面量，避免自指）
+const R26 = ['2', '6'].join('')
+// R1：`26\s*(技能|个技能|个|行|skills?)` 允许无空格写法（26个技能 / 26行 / 26skills）；整体大小写不敏感
+const COUNT_RESIDUE_RE = new RegExp(
+  [R26, '\\s*(技能|个技能|个|行|skills?)|', R26, '/', R26, '|完整 ', R26, '|and 1', '9 more|媒体', '生成'].join(''),
+  'i'
+)
+
+test('TA-07b 计数残留锁定：旧计数 / 媒体品类 / 旧 awesome 计数清零', async () => {
+  const roles = await roleFiles()
+  const scope = [
+    README_PATH,
+    path.join(PKG_ROOT, 'README.zh.md'),
+    path.join(PKG_ROOT, 'docs', 'awesome-dsh-plugin-entry.yml'),
+    TEAM_SKILL_PATH,
+    TEAM_DISPATCH_PATH,
+    path.join(PKG_ROOT, 'package.json'),
+    ...roles,
+  ]
+  assert.ok(roles.length >= 1, `roles/**/*.md 扫描面不得为空（实际 ${roles.length}）`)
+  for (const abs of scope) {
+    const content = await readFile(abs, 'utf8')
+    const hit = content.match(COUNT_RESIDUE_RE)
+    assert.equal(hit, null, `不得残留旧计数/媒体品类：${path.relative(PKG_ROOT, abs)} 命中 ${JSON.stringify(hit ? hit[0] : null)}`)
+  }
+})
+
+const AUTOPILOT_SKILL_PATH = path.join(SKILLS_DIR, 'autopilot', 'SKILL.md')
+const AUTOPILOT_HEADING = '## 团队协作默认策略（Agent Teams 优先）'
+const AUTOPILOT_BODY_TOKENS = ['默认组队', 'spawn_teammate', 'team_task_create', 'team_task_list', 'wait_agent',
+  'maxMembers', 'docs/capability-matrix.md', 'TEAM_LEAD_REQUIRED', 'queued', 'inactive']
+// 旧口径禁含（运行时拼接，避免自指）：autopilot / ultragoal / team 三文件同禁
+const FORBIDDEN_CLAUSES = [
+  ['必要', '时 team'].join(''),
+  ['故事明显受益于并行时才在故事内', '用 team'].join(''),
+  ['team 只在 ultragoal 故事内', '条件性使用'].join(''),
+  ['team 只在 ultragoal 故事', '需要并行时使用'].join(''),
+]
+const ULTRAGOAL_FORBIDDEN = ['故事明显受益于并行时', '：'].join('')
+const ALL_STALE_CLAUSES = [...FORBIDDEN_CLAUSES, ULTRAGOAL_FORBIDDEN]
+// F1：team 不得回收该句（与「默认组队」策略互斥）
+const TEAM_NO_AUTO_START = ['不自动从 ultragoal', ' 启动'].join('')
+
+test('TA-08 autopilot 默认组队：小节体锚定 + 协议结构次序 + 三文件旧口径禁含 + team 反矛盾守卫', async () => {
+  const content = await readFile(AUTOPILOT_SKILL_PATH, 'utf8')
+  const lines = content.split(/\r?\n/)
+  const heads = lines.map((l, i) => (l === AUTOPILOT_HEADING ? i : -1)).filter((i) => i >= 0)
+  assert.equal(heads.length, 1, `标题必须独占行且恰好 1 次（${AUTOPILOT_HEADING}，实际 ${heads.length}）`)
+  const s = heads[0]
+  let e = -1
+  for (let i = s + 1; i < lines.length; i++) if (lines[i].startsWith('## ')) { e = i; break }
+  const body = lines.slice(s + 1, e < 0 ? lines.length : e).join('\n')
+  assert.ok(body.trim().length > 0, '默认组队小节体不得为空（不接受整文件子串）')
+  for (const token of AUTOPILOT_BODY_TOKENS) {
+    assert.ok(body.includes(token), `小节体内必须含 ${token}`)
+  }
+  // F4 / R2：锚定在调用上——调用后同一句 60 字符内必须给出建任务语义（同行别处的「创建被拒」不再能满足）
+  assert.match(body, /team_task_create[^\n。；;]{0,60}(建任务|创建|建)/,
+    'team_task_create 必须在调用近旁（同句 60 字符内）给出建任务步骤（建/创建/建任务）')
+  const PROTOCOL = ['team_task_create', 'claim', 'complete']
+  const protocolAt = PROTOCOL.map((t) => body.indexOf(t))
+  protocolAt.forEach((v, i) => assert.ok(v >= 0, `小节体内缺少协议 token：${PROTOCOL[i]}`))
+  for (let i = 1; i < protocolAt.length; i++) {
+    assert.ok(protocolAt[i] > protocolAt[i - 1], `协议次序必须严格递增（team_task_create < claim < complete）：${JSON.stringify(protocolAt)}`)
+  }
+  // 旧口径禁含：autopilot / ultragoal / team 三文件同禁
+  const ultragoal = await readFile(path.join(SKILLS_DIR, 'ultragoal', 'SKILL.md'), 'utf8')
+  const teamSkill = await readFile(TEAM_SKILL_PATH, 'utf8')
+  assert.ok(ultragoal.includes('默认组队'), 'ultragoal 必须含「默认组队」')
+  for (const [label, text] of [['autopilot', content], ['ultragoal', ultragoal], ['team', teamSkill]]) {
+    for (const clause of ALL_STALE_CLAUSES) {
+      assert.equal(text.includes(clause), false, `${label} 不得残留旧口径（${clause}）`)
+    }
+  }
+  // F1 跨文件反矛盾：team 不得回收「不自动从 ultragoal 启动」
+  assert.equal(teamSkill.includes(TEAM_NO_AUTO_START), false, `team 技能不得回收旧口径（${TEAM_NO_AUTO_START}）`)
 })

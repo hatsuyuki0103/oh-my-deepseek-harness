@@ -13,6 +13,14 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 
 **视觉已支持**：`visual-ralph`（按参考图/URL 基线实现或重构前端 UI，DSH 视觉模型 + `read_image` 结构化判分 + 像素级迭代，并沉淀可复用设计系统）。visual-verdict / frontend-ui-ux / vision 属 OMX 内部机制，未独立移植；hud 是终端 HUD 编排，不依赖视觉模型，暂未收录。
 
+## v2.0.1 亮点
+
+- **两个媒体类技能已移除（破坏性变更）**：阿里云 Token Plan 与腾讯云 TokenHub 的生图 / 生视频技能（含脚本与专属测试）整体删除；**最便捷恢复源**是删除前的提交 `cc4605f`（`cc4605f` 之前的提交仍同时含两个技能，可一次取回）；按单个技能回溯则为 `e868005`（阿里云技能）与 `f9e0304`（腾讯云技能，该提交同时已含阿里云技能），并同步补齐技能表行与计数、调度矩阵行与测试。
+- **`autopilot` 默认组队**：进入 ultragoal 前做名册自检，名册含团队九工具即**默认组队**（`spawn_teammate` 组队 + `team_task_*` 共享任务板为唯一台账），仅在「故事确实不可并行」或「团队面未挂载」时不组队且必须显式记录理由；四级降级阶梯与 `docs/capability-matrix.md` 一致。
+- **能力矩阵**：`docs/capability-matrix.md` 给出可选能力的探测方式、已挂载 / 未挂载时的降级与判别陷阱。
+- **调度矩阵**：`skills/team/references/skill-dispatch.md` 给出 24 个技能的建议角色 / 并行性 / 写入范围策略 / 证据要求全表。
+- **版本 `2.0.1`**：自 `1.5.0` 起属破坏性收敛，故按语义化版本将主版本号跳到 2。
+
 ## 已收录技能
 
 **规划类**
@@ -48,8 +56,6 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 | `ai-slop-cleaner` | 反冗余清理：先锁测试 + 逐气味清理 + 兜底分类 |
 | `git-master` | Git 专家：原子提交 / 变基 / 分支管理（Conventional Commit） |
 | `design` | DESIGN.md 设计源工作流（文本化；像素对齐走 visual-ralph） |
-| `aliyun-media` | 阿里云 Token Plan 生图/生视频/视频编辑：检测配置 → 云端异步（超时长分段+尾帧衔接）→ 无配置回退本地 SD-WebUI/ComfyUI |
-| `tencent-media` | 腾讯云 TokenHub 生图/生视频：检测配置 → 同步/异步生图（每模型上限付费前校验）→ 异步生视频（分段+尾帧衔接）→ 免费 `task` 续查与 `stitch` 重拼 |
 
 **运维与自举**
 
@@ -61,11 +67,11 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 | `skill-authoring` | DSH 技能创作指南：契约 / 注册 / 打包 / 发布全流程 |
 | `ecomode` | 省 token 纪律：自做优先 / 合并委派 / 后台收口 |
 
-配套角色提示词（`roles/`，供 subagent 复用）：planner / architect / critic / analyst(Metis) / momus / oracle / executor / verifier / code-reviewer / test-engineer。
+配套角色提示词（`roles/`，供 subagent 复用）：planner / architect / critic / analyst(Metis) / momus / oracle / executor / verifier / code-reviewer / test-engineer。评审 / QA 双通道优先由 **teammate** 承担（`COND_REVIEW`：名册含 `spawn_teammate` → 团队双通道，两名 teammate 各担一通道 + `wait_agent` 收证据；否则名册含 `subagent` → 子代理双通道；两者皆无 → 报告 `independent review unavailable`，不批准）。
 
 可选能力与降级：官方团队九工具 / `ralph` / `subagent` 系 / `workflow` 等通道可能在当前 profile 未挂载或被预设停用；探测方式、判别陷阱与四级降级阶梯见 `docs/capability-matrix.md`（20 个技能/角色文件已内联同款指针）。
 
-（v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举 + 媒体生成，共 26 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
+（v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举，共 24 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
 
 ## 安装
 

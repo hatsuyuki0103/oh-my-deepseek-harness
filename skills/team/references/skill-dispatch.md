@@ -1,16 +1,15 @@
-# 技能 → teammate 调度矩阵（26/26 全表）
+# 技能 → teammate 调度矩阵（24/24 全表）
 
 > `team` 技能的调度真源：`skills/team/SKILL.md` 的「技能→teammate 调度矩阵（摘要）」与本表**同源**，改一处必须同步另一处。
 > 并行性取值：serial | fan-out | staged | lead-only（不新增第 5 种取值）。
 > 写入范围策略里的路径是**登记用建议值**，不是锁；`writeScopes` 只警告不授权，共享 cwd 无文件锁。
 > 可选能力（官方团队九工具 / `subagent` / `workflow` / `ralph` 工具）以名册实况为准，未挂载或被预设停用时的降级阶梯与探测规则见 `docs/capability-matrix.md`。
 
-## 全表（26 行 = `skills/` 目录集合）
+## 全表（24 行 = `skills/` 目录集合）
 
 | 技能 | 建议角色 | 并行性 | 写入范围策略 | 证据要求 |
 |---|---|---|---|---|
 | `ai-slop-cleaner` | executor+verifier | staged | 每 lane 独占文件 | `node --test` + 清理前后 diff |
-| `aliyun-media` | executor | serial | `skills/aliyun-media/**` | CLI dry-run（零付费） |
 | `analyze` | analyst | fan-out | 只读 | file:line 清单 |
 | `autopilot` | planner+executor+verifier | staged | 阶段独占、lead 汇总 | 各阶段闸输出 |
 | `build-fix` | executor | serial | 受影响模块独占 | 复现命令 + 修复后同命令 |
@@ -30,7 +29,6 @@
 | `skill-authoring` | executor+test-engineer | staged | `skills/<name>/**` 独占（**本轮禁止新增目录**） | 契约测试红→绿 |
 | `tdd` | test-engineer+executor | staged | 测试/实现文件分 lane | 红→绿输出 |
 | `team` | lead+verifier | fan-out/staged | 每 teammate 独占文件集 | `team_task_list`+`list_agents` 见证 |
-| `tencent-media` | executor | serial | `skills/tencent-media/**` | CLI dry-run（零付费） |
 | `ultragoal` | lead(目标所有人)+executor lanes | staged | worker 不碰 `.omx/ultragoal` | `ledger.jsonl` + `get_goal` 快照 |
 | `ultraqa` | executor+architect | staged 循环 | 每轮独占修复切片 | 场景矩阵 + 退出码 |
 | `ultrawork` | executor lanes | fan-out | 每 lane 独占文件 | 验收命令输出 |
