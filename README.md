@@ -49,6 +49,7 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 | `git-master` | Git 专家：原子提交 / 变基 / 分支管理（Conventional Commit） |
 | `design` | DESIGN.md 设计源工作流（文本化；像素对齐走 visual-ralph） |
 | `aliyun-media` | 阿里云 Token Plan 生图/生视频/视频编辑：检测配置 → 云端异步（超时长分段+尾帧衔接）→ 无配置回退本地 SD-WebUI/ComfyUI |
+| `tencent-media` | 腾讯云 TokenHub 生图/生视频：检测配置 → 同步/异步生图（每模型上限付费前校验）→ 异步生视频（分段+尾帧衔接）→ 免费 `task` 续查与 `stitch` 重拼 |
 
 **运维与自举**
 
@@ -62,7 +63,7 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 
 配套角色提示词（`roles/`，供 subagent 复用）：planner / architect / critic / analyst(Metis) / momus / oracle / executor / verifier / code-reviewer / test-engineer。
 
-（v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举 + 媒体生成，共 25 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
+（v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举 + 媒体生成，共 26 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
 
 ## 安装
 
