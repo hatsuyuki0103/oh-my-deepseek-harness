@@ -2,6 +2,21 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.1.0] - 2026-10-10
+
+### Added
+
+- **`canslim-trader` 技能**：CANSLIM 七因子（C/A/N/S/L/I/M）打分排序 → 买入 / 卖出 / 融券做空信号，并在 A 股 T+1 与两融约束下用 `ptrade` 模拟盘 CLI 走完「`init` → `sync` → `scan`/`recommend` → `plan` → `order` → `settle` → `risk` → `close` → `ledger`」闭环。口径真源为 `D:\Ai投资\INTERFACES.md` §2（阈值）/ §6.1（七因子）/ §6.2（信号顺序）/ §7（CLI）与 `ptrade/strategy.py`；正文含做多/做空分流、T+1（当日买入次日才可卖、卖出资金 T+1 到账）、两融（仅两融标的可融券、保证金比例、130% 平仓线）、输出契约与免责声明。
+- `test/skills.test.mjs`：`SKILL_PTR_FILES` 与 `CANONICAL_MATRIX` 同步新增 `canslim-trader` 行（逐字降级指针 + 25 行矩阵锚定）。
+
+### Changed
+
+- **技能数 24 → 25 的全契约点同步**：README.md 技能表新增「交易类」行并改「共 25 技能」；README.zh.md 改为 25；`docs/awesome-dsh-plugin-entry.yml` 技能清单补 `canslim-trader` 并改「等 25 个技能」；`skills/team/SKILL.md` 与 `skills/team/references/skill-dispatch.md` 调度矩阵 24 → 25 行（三处行体逐字一致）。
+- `package.json`：版本 `2.0.1` → `2.1.0`（新增技能属向后兼容的 minor）。
+- 降级指针面：`skills/canslim-trader/SKILL.md` 内联 `PTR_SKILL` 逐字指针（H1 后第 2 行），可选能力降级真源仍为 `docs/capability-matrix.md`。
+
+[2.1.0]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v2.1.0
+
 ## [2.0.1] - 2026-09-29
 
 ### Removed

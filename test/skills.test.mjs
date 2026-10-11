@@ -137,7 +137,8 @@ const PTR_ROLE = '> 可选能力：本角色引用的执行通道（官方团队
 const COND_REVIEW = '> 评审通道（按名册实况）：名册含 `spawn_teammate`（**仅 Lead 可调用**；teammate 需先请 Lead 建队）→ 团队双通道（两名 teammate 各担一通道，`wait_agent` 收证据）；否则名册含 `subagent` → 子代理双通道；否则报告 `independent review unavailable`，不批准。'
 
 const SKILL_PTR_FILES = ['ralph', 'visual-ralph', 'autopilot', 'ralplan', 'plan', 'prometheus-strict', 'deep-interview',
-  'ultrawork', 'ecomode', 'security-review', 'ai-slop-cleaner', 'ultraqa', 'code-review', 'team', 'doctor', 'cancel', 'ultragoal']
+  'ultrawork', 'ecomode', 'security-review', 'ai-slop-cleaner', 'ultraqa', 'code-review', 'team', 'doctor', 'cancel', 'ultragoal',
+  'canslim-trader']
 const ROLE_PTR_FILES = ['planner', 'oracle', 'momus']
 const COND_REVIEW_FILES = ['code-review', 'ultraqa', 'ralplan', 'plan']
 
@@ -225,13 +226,14 @@ const ROLE_VOCAB = ['analyst', 'architect', 'code-reviewer', 'critic', 'executor
 const ROLE_QUALIFIERS = ['lanes']   // PRD 冻结行的量词（`executor lanes`），不是角色名
 
 // round-3 B2 / round-4：冻结逐行映射（列 2/3/4/5 = 建议角色 / 并行性 / 写入范围 / 证据要求），逐字取自
-// PRD v3.1 §3-WS-A「矩阵内容」定稿表（v2.0.1 起 24 行，行数由 skills/ 目录数决定）；行体对调 / 首列改名 / 语义反转 / 第 5 列漂移都必须红。
+// PRD v3.1 §3-WS-A「矩阵内容」定稿表（v2.0.1 起 24 行、v2.1.0 起 25 行，行数由 skills/ 目录数决定）；行体对调 / 首列改名 / 语义反转 / 第 5 列漂移都必须红。
 const CANONICAL_MATRIX = {
   'ai-slop-cleaner': ['executor+verifier', 'staged', '每 lane 独占文件', '`node --test` + 清理前后 diff'],
   'analyze': ['analyst', 'fan-out', '只读', 'file:line 清单'],
   'autopilot': ['planner+executor+verifier', 'staged', '阶段独占、lead 汇总', '各阶段闸输出'],
   'build-fix': ['executor', 'serial', '受影响模块独占', '复现命令 + 修复后同命令'],
   'cancel': ['lead', 'lead-only', '状态文件独占', '终态文件 + `job_list`'],
+  'canslim-trader': ['analyst+executor', 'serial', '`<root>/data/**` 独占（单写者）', '`python -m ptrade scan --json` + `ledger` 输出'],
   'code-review': ['code-reviewer+architect', 'fan-out(2 独立)', '只读', '双通道结论（APPROVE/CLEAR）'],
   'deep-interview': ['analyst+lead', 'serial', '`.omx/interviews` / `.omx/specs`', '访谈产物 + 歧义评分'],
   'design': ['executor+verifier', 'staged', '`DESIGN.md` 独占', '设计证据清单'],
@@ -389,8 +391,8 @@ test('能力矩阵：docs/capability-matrix.md 存在且含四类能力、降级
     '缺少 send_message 判别行（须同行含 target 与 agent_id）')
 })
 
-test('降级指针契约：20 文件逐字指针 + review 通道条件行 + ralph 提及守卫（非空洞自测）', async () => {
-  // 17 skills + 3 roles：指针行 H1+2 逐字相等；4 个评审技能另有 H1+3 条件行
+test('降级指针契约：21 文件逐字指针 + review 通道条件行 + ralph 提及守卫（非空洞自测）', async () => {
+  // 18 skills + 3 roles：指针行 H1+2 逐字相等；4 个评审技能另有 H1+3 条件行
   for (const name of SKILL_PTR_FILES) {
     const file = `skills/${name}/SKILL.md`
     const content = await readFile(path.join(SKILLS_DIR, name, 'SKILL.md'), 'utf8')
@@ -474,10 +476,10 @@ test('团队桥接：doctor 探测面与动态插件降级 / cancel 任务板收
   }
 })
 
-test('元数据与文档一致性：version 2.0.1 / files / dshVersions / capability 见证 / CHANGELOG / docs entry / README.zh', async () => {
+test('元数据与文档一致性：version 2.1.0 / files / dshVersions / capability 见证 / CHANGELOG / docs entry / README.zh', async () => {
   const pkgRaw = await readFile(path.join(PKG_ROOT, 'package.json'), 'utf8')
   const pkg = JSON.parse(pkgRaw)
-  assert.equal(pkg.version, '2.0.1')
+  assert.equal(pkg.version, '2.1.0')
   for (const f of ['test', 'CHANGELOG.md', 'docs']) {
     assert.ok(pkg.files.includes(f), `package.json files 应含 ${f}（实际：${JSON.stringify(pkg.files)}）`)
   }
@@ -491,7 +493,7 @@ test('元数据与文档一致性：version 2.0.1 / files / dshVersions / capabi
   assert.ok(changelog.includes('## [1.5.0]'), 'CHANGELOG 应保留 ## [1.5.0] 历史段（锁历史不丢）')
 
   const readme = await readFile(README_PATH, 'utf8')
-  assert.ok(readme.includes('共 24 技能'), 'README.md 应含「共 24 技能」')
+  assert.ok(readme.includes('共 25 技能'), 'README.md 应含「共 25 技能」')
   assert.ok(readme.includes('docs/capability-matrix.md'), 'README.md 应含能力矩阵指针')
 
   const readmeZh = await readFile(path.join(PKG_ROOT, 'README.zh.md'), 'utf8')
@@ -500,7 +502,7 @@ test('元数据与文档一致性：version 2.0.1 / files / dshVersions / capabi
 
   const entry = await readFile(path.join(PKG_ROOT, 'docs', 'awesome-dsh-plugin-entry.yml'), 'utf8')
   assert.ok(entry.includes('and 17 more'), 'awesome entry 应含 and 17 more')
-  assert.ok(entry.includes('24 个技能'), 'awesome entry 应含 24 个技能')
+  assert.ok(entry.includes('25 个技能'), 'awesome entry 应含 25 个技能')
 })
 
 // ─────────────────────────────────────────────────────────────────────────────

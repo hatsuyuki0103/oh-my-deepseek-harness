@@ -1,11 +1,11 @@
-# 技能 → teammate 调度矩阵（24/24 全表）
+# 技能 → teammate 调度矩阵（25/25 全表）
 
 > `team` 技能的调度真源：`skills/team/SKILL.md` 的「技能→teammate 调度矩阵（摘要）」与本表**同源**，改一处必须同步另一处。
 > 并行性取值：serial | fan-out | staged | lead-only（不新增第 5 种取值）。
 > 写入范围策略里的路径是**登记用建议值**，不是锁；`writeScopes` 只警告不授权，共享 cwd 无文件锁。
 > 可选能力（官方团队九工具 / `subagent` / `workflow` / `ralph` 工具）以名册实况为准，未挂载或被预设停用时的降级阶梯与探测规则见 `docs/capability-matrix.md`。
 
-## 全表（24 行 = `skills/` 目录集合）
+## 全表（25 行 = `skills/` 目录集合）
 
 | 技能 | 建议角色 | 并行性 | 写入范围策略 | 证据要求 |
 |---|---|---|---|---|
@@ -14,6 +14,7 @@
 | `autopilot` | planner+executor+verifier | staged | 阶段独占、lead 汇总 | 各阶段闸输出 |
 | `build-fix` | executor | serial | 受影响模块独占 | 复现命令 + 修复后同命令 |
 | `cancel` | lead | lead-only | 状态文件独占 | 终态文件 + `job_list` |
+| `canslim-trader` | analyst+executor | serial | `<root>/data/**` 独占（单写者） | `python -m ptrade scan --json` + `ledger` 输出 |
 | `code-review` | code-reviewer+architect | fan-out(2 独立) | 只读 | 双通道结论（APPROVE/CLEAR） |
 | `deep-interview` | analyst+lead | serial | `.omx/interviews` / `.omx/specs` | 访谈产物 + 歧义评分 |
 | `design` | executor+verifier | staged | `DESIGN.md` 独占 | 设计证据清单 |

@@ -94,7 +94,7 @@ DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、�
 
 ## 技能→teammate 调度矩阵（摘要）
 
-完整 24 行表在 [`references/skill-dispatch.md`](references/skill-dispatch.md)，与本表同源（改一处必须同步另一处）。
+完整 25 行表在 [`references/skill-dispatch.md`](references/skill-dispatch.md)，与本表同源（改一处必须同步另一处）。
 
 | 技能 | 建议角色 | 并行性 | 写入范围策略 | 证据要求 |
 |---|---|---|---|---|
@@ -103,6 +103,7 @@ DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、�
 | `autopilot` | planner+executor+verifier | staged | 阶段独占、lead 汇总 | 各阶段闸输出 |
 | `build-fix` | executor | serial | 受影响模块独占 | 复现命令 + 修复后同命令 |
 | `cancel` | lead | lead-only | 状态文件独占 | 终态文件 + `job_list` |
+| `canslim-trader` | analyst+executor | serial | `<root>/data/**` 独占（单写者） | `python -m ptrade scan --json` + `ledger` 输出 |
 | `code-review` | code-reviewer+architect | fan-out(2 独立) | 只读 | 双通道结论（APPROVE/CLEAR） |
 | `deep-interview` | analyst+lead | serial | `.omx/interviews` / `.omx/specs` | 访谈产物 + 歧义评分 |
 | `design` | executor+verifier | staged | `DESIGN.md` 独占 | 设计证据清单 |
