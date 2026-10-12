@@ -13,9 +13,14 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 
 **视觉已支持**：`visual-ralph`（按参考图/URL 基线实现或重构前端 UI，DSH 视觉模型 + `read_image` 结构化判分 + 像素级迭代，并沉淀可复用设计系统）。visual-verdict / frontend-ui-ux / vision 属 OMX 内部机制，未独立移植；hud 是终端 HUD 编排，不依赖视觉模型，暂未收录。
 
+## v2.2.0 亮点
+
+- **`canslim-trader` 的模拟盘依赖改为公开可安装**：`ptrade` 拆分为独立仓库 [hatsuyuki0103/ptrade](https://github.com/hatsuyuki0103/ptrade) 并单独发布（Python 包 + 自己的 release）。技能内的口径真源从本机路径改为该仓库的 `INTERFACES.md`，前置检查补上 `pip install git+https://github.com/hatsuyuki0103/ptrade`。
+  - 此前技能假设 `ptrade` 在某个本机路径，外部用户装了插件也无法使用；拆仓后「模拟盘是 Python 工具、插件是 Node 包」各自按自己的机制分发。
+
 ## v2.1.0 亮点
 
-- **新增 `canslim-trader` 技能**：CANSLIM 七因子（C/A/N/S/L/I/M）打分排序 → 买入 / 卖出 / 融券做空信号，并在 A 股 T+1 与两融约束下用 `ptrade` 模拟盘 CLI 走完 `init` → `sync` → `scan`/`recommend` → `plan` → `order` → `settle` → `risk` → `close` → `ledger` 闭环；打分与信号口径真源为 `D:\Ai投资\INTERFACES.md` §2（阈值）/ §6.1（七因子）/ §6.2（信号顺序）/ §7（CLI）与 `ptrade/strategy.py`；**仅供研究与模拟盘演练，不构成投资建议**。
+- **新增 `canslim-trader` 技能**：CANSLIM 七因子（C/A/N/S/L/I/M）打分排序 → 买入 / 卖出 / 融券做空信号，并在 A 股 T+1 与两融约束下用 `ptrade` 模拟盘 CLI 走完 `init` → `sync` → `scan`/`recommend` → `plan` → `order` → `settle` → `risk` → `close` → `ledger` 闭环；打分与信号口径真源为 [ptrade](https://github.com/hatsuyuki0103/ptrade) 仓库的 `INTERFACES.md` §2（阈值）/ §6.1（七因子）/ §6.2（信号顺序）/ §7（CLI）与 `ptrade/strategy.py`；**仅供研究与模拟盘演练，不构成投资建议**。
 - **技能数 24 → 25**：README 技能表、`docs/awesome-dsh-plugin-entry.yml`、`skills/team/SKILL.md` 与 `skills/team/references/skill-dispatch.md` 调度矩阵、`test/skills.test.mjs` 的 `CANONICAL_MATRIX` / `SKILL_PTR_FILES` 已同步；版本 `2.0.1` → `2.1.0`。
 
 ## v2.0.1 亮点

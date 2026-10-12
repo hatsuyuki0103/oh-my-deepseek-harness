@@ -2,6 +2,18 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.2.0] - 2026-10-12
+
+### Changed
+
+- **`canslim-trader` 的 `ptrade` 依赖改为公开可安装**：模拟盘 `ptrade` 拆分为独立仓库 [hatsuyuki0103/ptrade](https://github.com/hatsuyuki0103/ptrade) 单独发布（Python 包，自己的 release 与 wheel），技能内的口径真源从本机路径 `D:\Ai投资\INTERFACES.md` 改为该仓库的 `INTERFACES.md`。
+  - **前置检查**补 `ptrade` 安装指引：`pip install git+https://github.com/hatsuyuki0103/ptrade`，或从其 Releases 取 wheel；离线夹具用 `python tools/fetch-fixtures.py` 获取。
+  - **数据根**说明同步为三级解析（`--root` → `PTRADE_HOME` → 源码检出根 → `~/.ptrade`），删掉「默认 `D:\Ai投资`」这一只对本机成立的硬编码。
+  - **为什么改**：此前技能假设 `ptrade` 存在于某个本机路径，外部用户即使装了插件也无法使用 —— 技能不可独立运行。拆仓后「模拟盘是 Python 工具、插件是 Node 包」各自按自己的机制分发，受众也不再绑定。
+- `README.md` / `README.zh.md` 的相关段落同步指向 ptrade 公开仓库。
+
+[2.2.0]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v2.2.0
+
 ## [2.1.0] - 2026-10-10
 
 ### Added

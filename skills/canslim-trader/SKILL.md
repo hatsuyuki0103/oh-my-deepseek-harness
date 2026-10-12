@@ -8,7 +8,7 @@ argument-hint: "[--codes <600519,002594>] [--asof YYYY-MM-DD] [--offline] [--jso
 
 > 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
 
-本技能把 **CANSLIM 七因子选股口径** 与 **`ptrade` 模拟盘** 绑成一条可验证的流水线。口径真源是 `D:\Ai投资\INTERFACES.md`：§6.1（七因子打分）/ §6.2（信号判定顺序）/ §2（阈值配置）/ §7（CLI 契约）。技能内任何数值与实现冲突时，**以 `INTERFACES.md` 与 `ptrade/strategy.py` 的实际阈值为准**，并同步本文件。
+本技能把 **CANSLIM 七因子选股口径** 与 **`ptrade` 模拟盘** 绑成一条可验证的流水线。口径真源是 `ptrade` 仓库的 `INTERFACES.md`：§6.1（七因子打分）/ §6.2（信号判定顺序）/ §2（阈值配置）/ §7（CLI 契约）；`ptrade` 同时是该接口的实现。技能内任何数值与实现冲突时，**以 `INTERFACES.md` 与 `ptrade/strategy.py` 的实际阈值为准**，并同步本文件。
 
 ## 何时用
 
@@ -28,10 +28,22 @@ argument-hint: "[--codes <600519,002594>] [--asof YYYY-MM-DD] [--offline] [--jso
 
 ## 前置检查（开工前 30 秒）
 
-1. `python -m ptrade --help` 能跑通 → 包可导入（Python 3.11+；本项目基线 3.14.3）；
-2. 数据根默认 `D:\Ai投资`（后文记作 `<root>`），可用全局 `--root <path>` 覆盖（测试指向临时目录）；
-3. 配置：`<root>/config.json` 存在则覆盖默认阈值，缺失字段回落到默认值（下表默认值即 `INTERFACES.md` §2）；
-4. 三条铁律：① `--offline` 下**绝不联网**；② 任何一单先 `plan` 后 `order`；③ 每笔成交后必须 `settle` 到次一交易日才能再动同一持仓。
+1. **`ptrade` 是否可用**：`python -m ptrade --help` 能跑通 → 包已装（Python ≥ 3.11）。
+   **不可用时先安装**（`ptrade` 是独立发布的 Python 包，不随本插件分发）：
+
+   ```sh
+   pip install git+https://github.com/hatsuyuki0103/ptrade
+   # 或从 Releases 下载 wheel：https://github.com/hatsuyuki0103/ptrade/releases
+   ```
+
+   首次使用若需要 `--offline`（离线夹具），在 `ptrade` 仓库跑一次
+   `python tools/fetch-fixtures.py`（从 release 下载夹具与剧本）。
+
+2. **数据根**（后文记作 `<root>`）：按 `--root <path>` → `PTRADE_HOME` → 源码检出根 → `~/.ptrade` 依次解析。
+   三个中最常用的是显式指定：`python -m ptrade ... --root <path>`；想固定一个工作目录就设 `PTRADE_HOME`。
+   账户状态、台账、缓存、图表产物都落在 `<root>` 下。
+3. **配置**：`<root>/config.json` 存在则覆盖默认阈值，缺失字段回落到默认值（下表默认值即 `INTERFACES.md` §2）；
+4. **三条铁律**：① `--offline` 下**绝不联网**；② 任何一单先 `plan` 后 `order`；③ 每笔成交后必须 `settle` 到次一交易日才能再动同一持仓。
 
 ## CANSLIM 七因子打分口径
 

@@ -476,10 +476,10 @@ test('团队桥接：doctor 探测面与动态插件降级 / cancel 任务板收
   }
 })
 
-test('元数据与文档一致性：version 2.1.0 / files / dshVersions / capability 见证 / CHANGELOG / docs entry / README.zh', async () => {
+test('元数据与文档一致性：version 2.2.0 / files / dshVersions / capability 见证 / CHANGELOG / docs entry / README.zh', async () => {
   const pkgRaw = await readFile(path.join(PKG_ROOT, 'package.json'), 'utf8')
   const pkg = JSON.parse(pkgRaw)
-  assert.equal(pkg.version, '2.1.0')
+  assert.equal(pkg.version, '2.2.0')
   for (const f of ['test', 'CHANGELOG.md', 'docs']) {
     assert.ok(pkg.files.includes(f), `package.json files 应含 ${f}（实际：${JSON.stringify(pkg.files)}）`)
   }
