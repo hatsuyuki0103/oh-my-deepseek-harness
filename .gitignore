@@ -2,3 +2,6 @@ node_modules/
 *.tgz
 *.log
 .DS_Store
+
+# 提交信息临时文件（避免被 git add -A 误收）
+msg.txt
