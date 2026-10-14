@@ -152,7 +152,69 @@ python -m ptrade status --json
 
 # 8) 看盘：生成离线自包含 K 线图（K线 + MA12/24/48/96 + BOLL + MACD + SAR + 成交量/成交额，日/周/月线页内切换，含 CANSLIM 分析区）
 python -m ptrade chart --code 601398 --period daily --asof 2025-10-09 --offline --json
+
+# 9) 搜股票：按**代码片段**或**中文名**搜全市场
+#    ⚠️ **前提**：需要名称表缓存 `<root>/data/cache/stock_list.json`。
+#       全新数据根下没有它 → `ok=false` + `DataUnavailable`（明确告诉你「请先联网执行一次 search」）。
+#       离线可用性取决于这个缓存是否已存在；`--refresh` 才会联网重建它。
+python -m ptrade search 茅台 --limit 10 --offline --json
+python -m ptrade search 600 --limit 5 --offline --json      # 代码片段也支持
+#    有缓存时：无命中 → `ok=true, count=0`（**不是错误**）
+python -m ptrade search 不存在的票 --offline --json
+#    需要重建名称表（**联网**）：python -m ptrade search 茅台 --refresh --json
+
+# 10) 自选池：加 / 删 / 列（幂等：重复 add 不产生重复项）
+python -m ptrade watchlist --action add 601398 --name 工商银行 --note "CANSLIM C+A 达标" --offline --json
+python -m ptrade watchlist --action list --offline --json
+python -m ptrade watchlist --action remove 601398 --offline --json
+
+# 11) 打开本地网页端（浏览器看账户/持仓/打分/K线图/搜索/自选池）
+#     默认 http://127.0.0.1:8765 —— **只本地监听**；--host 改其它值会让同网段可下单
+python -m ptrade serve --offline
+#     serve 是**长驻**命令（Ctrl+C 退出）；`--offline` 是硬闸：
+#     请求级 `?offline=` 只能更严、不能更松。
+
+# 12) 按**实时快照价**成交（B）：价格取自当前快照，**无需手写 --trade-date**
+python -m ptrade order --code 601398 --side buy --qty 100 --price live --json
+#     ⚠️ 快照陈旧时会**明确拒绝**（NO_PRICE），**绝不**静默退回陈旧价 ——
+#     错误信息给出 asof / fetched_at / 今天，并指明「在线重取快照」或「改用 --price <价格>」。
+#     不传 --price 时用行情 last ± 滑点（市价）；传数字时用你给的价。
 ```
+
+**成交价审计（每笔都能回答「用的是哪一刻的价」）**：`ledger.jsonl` 与
+`status --json` 的每条订单（**含拒绝单**）都带三个字段：
+
+| 字段 | 含义 |
+|---|---|
+| `price_source` | `"live"`（实时快照）/ `"request"`（你给的价）/ `""`（市价推导）|
+| `price_asof` | 该价对应的**行情日期** |
+| `price_fetched_at` | 该快照的**抓取时刻** —— 真正回答「哪一刻的价」 |
+
+**`search --json` 的返回结构**（实测）：
+
+```json
+{"ok": true, "command": "search", "error": null,
+ "data": {"query": "600", "count": 2, "offline": true,
+          "results": [{"code": "600036", "name": "招商银行", "is_margin": null, "is_short": null},
+                      {"code": "600519", "name": "贵州茅台", "is_margin": null, "is_short": null}]}}
+```
+
+**注意键名是 `results`**（不是 `items`）；`is_margin` / `is_short` 在名称表里没有该信息时为 `null`。
+
+**`watchlist --json` 的返回结构**（实测 add）：
+
+```json
+{"ok": true, "command": "watchlist", "error": null,
+ "data": {"count": 1,
+          "items": [{"code": "601398", "name": "工商银行", "note": "",
+                     "added_at": "2026-10-14T12:26:18.963203+00:00"}]}}
+```
+
+（这里键名是 **`items`** —— 与 `search` 的 `results` 不同，脚本里别混。）
+
+**与真实盘的差距（必须对用户说清，不要暗示这是真撮合）**：没有盘口/撮合（一律立即全额成交）、
+没有滑点、价格分辨率 **60 秒**而非逐笔、涨跌停只有价格边界检查没有排队。
+
 
 命令语义（必须遵守）：
 
