@@ -1,0 +1,6 @@
+{
+  "places": [
+    { "id": "hall", "name": "大厅", "region": "港区", "aliases": [], "light": "dim" }
+  ],
+  "edges": []
+}

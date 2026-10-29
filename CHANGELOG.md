@@ -2,6 +2,39 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.3.0] - 2026-10-29
+
+### Added
+
+- **`novel-forge` 技能**：长篇小说工坊——立意 → 世界观/人物/大纲 → 逐章成稿；用 `.omx/novel/<slug>/` 状态账本（世界硬规则 / 人物 / 地点图 / 事实 / 伏笔 / 章节 frontmatter）把**可机器判定的**跨章矛盾变成门禁证据，用**六维逻辑闸**（台词 / 空间 / 物理 / 时间 / 人物 / 因果伏笔）+ **反 AI 腔体检**作为章门禁：不过闸不进下一章。正文与标注是否一致、人物声音、动机等语义层由技能内的语义审校 rubric 与「反向抽取复核」（每 5 章 / 每卷用独立上下文从正文反抽场景元信息，与 frontmatter 比对）承接，不承诺「保证不犯硬伤」。引擎不可用时降级为人工规则校验并留痕 `reports/gate-degraded.md`。
+- **确定性校验引擎 `lib/novel-lint.mjs`**：零依赖 Node ESM（无网络、无 npm 依赖），62 条规则（结构 8 / 空间 5 / 时间 7 / 物理 7 / 台词 3 / 人物 6 / 事实 4 / 伏笔 6 / 大纲 5 / 反 AI 腔 11），把设定与正文的硬矛盾变成带 `rule id`、严重度（BLOCKER/MAJOR/MINOR/NIT/INFO）与修复路由（prose/bible/outline/config）的发现；子命令 `init` / `lint` / `status` / `context` / `prose` / `rules`，退出码 0/1/2；`init --force` 只补缺失文件、绝不覆盖已写稿件；`lint` 默认落盘 `reports/last.json` + `reports/last.md`，**写盘失败退出码 2**（不静默 PASS）；`--chapter` 作用域 = 本章 + 全部全局（`bible/**`、`outline/**`、`project.json`）级发现；`context` 用于「下一章写前上下文包」，**不要求章节文件已存在**。
+- **反 AI 腔评分**：强信号词（权重 1.0）+ 弱信号词（0.25）+ 句式模板 + 句长节奏 CV + 段落均匀度 + 对话标签单一度 + 情绪直给 + 翻译腔 + 段末升华合成 0-100 体检分（`weightedHitsPer1000` 可复核），VOICE-002/011 为 MAJOR 阻塞项；默认阈值 `maxWeightedClichesPer1000: 1.5`（面向中文长篇常见密度，可按文体调整），配「≥2 段真实人类写作」负控流程与「调阈值 → 定点豁免 → 用户裁定」三步出口。**真实人类语料基线校准登记为 v1.1 follow-up**，本版不宣称零误判。
+- **契约测试 `test/novel-lint.test.mjs`**：NF-01…NF-23（含 YAML-lite 正反例、逐维故障夹具、公式自洽、豁免语义、`init --force` 丢稿回归、规则覆盖台账），并新增静态契约：`RULES` 与 `references/logic-rules.md` 双向集合等值、SKILL.md 关键 token。
+
+### Changed
+
+- **技能数 25 → 26 的全契约点同步**：README.md 新增「创作类」表行 + 「共 26 技能」+「22 个技能/角色文件」+「无需改代码」限定 + v2.3.0 亮点段；README.zh.md 改 26 并补 v2.3.0 句；`docs/awesome-dsh-plugin-entry.yml` en 显式清单 8→9（`and 17 more` 不变）与 zh「等 26 个技能」；`skills/team/SKILL.md` 与 `skills/team/references/skill-dispatch.md` 调度矩阵 25→26 行（三处行体逐字一致）。
+- `test/skills.test.mjs`：`SKILL_PTR_FILES` 增 `novel-forge`（22 文件）、`CANONICAL_MATRIX` 增冻结行、版本断言 2.3.0、README/awesome 计数同步、计数残留锁改名为 `STALE_COUNT` 并把值前移为 `'25'`（锁上一代计数），并新增 novel-forge 静态契约测试（`RULES`↔`references/logic-rules.md` 双向等值 + SKILL.md token +「62 条 / CHAR-006 / ≥2 段」防漂移断言）。
+- `package.json`：版本 `2.2.0` → `2.3.0`（新增技能属向后兼容的 minor）；keywords 增 `novel-forge` / `novel-writing`。
+
+### Fixed
+
+- **独立 code-review 双通道（code-reviewer + architect）修复轮**：
+  - `context --chapter N` 不再要求 `chapters/ch-NNN.md` 已存在（此前每章开工第一步必失败；`context` 只校验正整数 + 大纲卡，修 H1/C1）。
+  - `--chapter N` 门禁作用域补全：findings = 本章 + 全部全局（`bible/**`、`outline/**`、`project.json`）级发现；此前坏 `hooks.jsonl` 时全量 `lint` FAIL 而章门禁 PASS（修 H2）。
+  - 报告写盘失败不再静默：默认 `reports/last.*` 或 `--report` 写失败 → stderr + 退出码 2（此前 exit 0/PASS 且无报告文件，修 H3/C2）。
+  - `prose` 改为委托 `lintChapterText`：补齐空正文 `DOC-006 BLOCKER`，产出集显式限定为 `DOC-005/006 + VOICE-001…011`（不含 `DOC-007`）（修 M1）。
+  - `OUT-004` 改为集合比较（顺序无关，此前调换场景顺序会误报 MAJOR）（修 M2）。
+  - `DOC-004` 连续缺口聚合为单条 finding（此前 `ch-999` 手误产生 997 条 finding / 356KB 报告）（修 M5）。
+  - 删除无消费者的 `emotionGuides` 死代码；`emotionPer1000` 口径不变（修 M3）。
+  - 反 AI 腔默认阈值 `maxWeightedClichesPer1000` 由 `1.0` 调整为 `1.5`（降低中文叙事高频弱信号词的误杀面；真实语料校准仍为 v1.1 follow-up）（修 C3 阈值项）。
+  - 文档回填：SKILL.md「62 条规则 / CHAR-006 / 人类负控 ≥2 段」、`logic-rules.md`「49→48 条、VOICE-011 级别 MAJOR」、参考手册命令统一 `$NOVEL_LINT`（修 M4/M6/C5/C9）。
+  - **计划型断言与章门禁解耦**（B2-F1）：`OUT-003`（大纲已建计划、章节未写）与 `FACT-004`（伏笔回收/事实揭示指向计划章）不再并入 `--chapter` 章门禁——「先建大纲、再逐章写」时第一关门禁不再必然失败；全量 `lint` 仍照常报这两条（草稿期属预期，写完即消）。其余全局级 findings 仍拦章门禁。
+  - **反 AI 腔 fail-closed**（B2-F2）：体检内部异常时按 `score = 0` 处理并产出 `VOICE-011 MAJOR`，不再出现「分析失败 = 满分放行」。
+  - `prose` 的 `DOC-005` message 补行号信息（与 `line` 一致，修 A2-N1）；`renderReport` 对 markdown 表格特殊字符转义（修 B2-F4）。
+
+[2.3.0]: https://github.com/hatsuyuki0103/oh-my-deepseek-harness/releases/tag/v2.3.0
+
 ## [2.2.0] - 2026-10-12
 
 ### Changed

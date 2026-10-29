@@ -1,0 +1,29 @@
+{
+  "schema": "novel-forge/v1",
+  "title": "雨停之前",
+  "slug": "yu-ting-zhi-qian",
+  "lang": "zh-CN",
+  "genre": ["悬疑"],
+  "audience": "网文读者",
+  "viewpoint": { "character": "lin-jin", "mode": "third-limited", "tense": "past" },
+  "chapterWords": 500,
+  "chapterWordsTolerance": 0.8,
+  "staleHookChapters": 5,
+  "storyYear": 2026,
+  "daylight": { "sunrise": "06:30", "sunset": "18:00" },
+  "hardRules": [
+    { "id": "R-001", "statement": "本世界没有超自然力量，一切异常必须有物理解释", "scope": "world" }
+  ],
+  "envRules": [],
+  "style": {
+    "forbiddenWords": [],
+    "thresholds": {
+      "maxWeightedClichesPer1000": 1.5,
+      "minVoiceScore": 60,
+      "minSentenceLengthCV": 0.35,
+      "maxDialogueTagRatio": 0.7,
+      "maxEmotionPer1000": 1.2,
+      "maxTemplateHits": 3
+    }
+  }
+}

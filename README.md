@@ -13,6 +13,13 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 
 **视觉已支持**：`visual-ralph`（按参考图/URL 基线实现或重构前端 UI，DSH 视觉模型 + `read_image` 结构化判分 + 像素级迭代，并沉淀可复用设计系统）。visual-verdict / frontend-ui-ux / vision 属 OMX 内部机制，未独立移植；hud 是终端 HUD 编排，不依赖视觉模型，暂未收录。
 
+## v2.3.0 亮点
+
+- **新增 `novel-forge` 技能**：长篇小说工坊——立意 → 世界观/人物/大纲 → 逐章成稿，用状态账本 + **六维逻辑闸**（台词 / 空间 / 物理 / 时间 / 人物 / 因果伏笔）把**可机器判定的**矛盾变成门禁证据；每章过闸才进下一章，附确定性校验引擎与**反 AI 腔体检**。正文与标注是否一致、人物声音、动机等语义层由技能内的语义审校 rubric 与反向抽取复核承接（不做「保证不犯硬伤」的承诺）。
+- **确定性校验引擎 `lib/novel-lint.mjs`**：零依赖 Node ESM，把「空间瞬移 / 时间倒退 / 道具凭空 / 知识越界 / 死者复活 / 伏笔乱序 / 元信息泄漏」变成带 rule id 与严重度的门禁发现；`init` / `lint` / `status` / `context` / `prose` / `rules` 六个子命令，退出码 0/1/2 可直接进 CI；`--chapter` 作用域 = 本章 + 全部全局级发现（账本级 BLOCKER 同样拦门禁；计划型断言 `OUT-003`/`FACT-004` 除外，保证「先建大纲、逐章写」），报告写盘失败退出码 2（不静默 PASS）。
+- **反 AI 腔**：词表密度 + 句式模板 + 句长节奏 CV + 对话标签单一度 + 情绪直给 + 翻译腔合成 0-100 体检分，低于阈值阻塞交稿；默认阈值面向中文长篇常见密度、**可按文体调整**（`maxWeightedClichesPer1000: 1.5`），配「人类负控流程（≥2 段真实人类写作）+ 调阈值 → 定点豁免 → 用户裁定」三步出口。真实人类语料基线校准登记为 v1.1 follow-up（不宣称零误判）。
+- **技能数 25 → 26**：README 技能表、`docs/awesome-dsh-plugin-entry.yml`、`skills/team/SKILL.md` 与 `skills/team/references/skill-dispatch.md` 调度矩阵、`test/skills.test.mjs` 的 `SKILL_PTR_FILES` / `CANONICAL_MATRIX` 同步；版本 `2.2.0` → `2.3.0`。
+
 ## v2.2.0 亮点
 
 - **`canslim-trader` 的模拟盘依赖改为公开可安装**：`ptrade` 拆分为独立仓库 [hatsuyuki0103/ptrade](https://github.com/hatsuyuki0103/ptrade) 并单独发布（Python 包 + 自己的 release）。技能内的口径真源从本机路径改为该仓库的 `INTERFACES.md`，前置检查补上 `pip install git+https://github.com/hatsuyuki0103/ptrade`。
@@ -28,7 +35,7 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 - **两个媒体类技能已移除（破坏性变更）**：阿里云 Token Plan 与腾讯云 TokenHub 的生图 / 生视频技能（含脚本与专属测试）整体删除；**最便捷恢复源**是删除前的提交 `cc4605f`（`cc4605f` 之前的提交仍同时含两个技能，可一次取回）；按单个技能回溯则为 `e868005`（阿里云技能）与 `f9e0304`（腾讯云技能，该提交同时已含阿里云技能），并同步补齐技能表行与计数、调度矩阵行与测试。
 - **`autopilot` 默认组队**：进入 ultragoal 前做名册自检，名册含团队九工具即**默认组队**（`spawn_teammate` 组队 + `team_task_*` 共享任务板为唯一台账），仅在「故事确实不可并行」或「团队面未挂载」时不组队且必须显式记录理由；四级降级阶梯与 `docs/capability-matrix.md` 一致。
 - **能力矩阵**：`docs/capability-matrix.md` 给出可选能力的探测方式、已挂载 / 未挂载时的降级与判别陷阱。
-- **调度矩阵**：`skills/team/references/skill-dispatch.md` 给出 25 个技能的建议角色 / 并行性 / 写入范围策略 / 证据要求全表。
+- **调度矩阵**：`skills/team/references/skill-dispatch.md` 给出 26 个技能的建议角色 / 并行性 / 写入范围策略 / 证据要求全表。
 - **版本 `2.0.1`**：自 `1.5.0` 起属破坏性收敛，故按语义化版本将主版本号跳到 2。
 
 ## 已收录技能
@@ -83,11 +90,17 @@ OMX 风格的工作流技能集，为 [DeepSeek Harness](https://www.deepseekhar
 |---|---|
 | `canslim-trader` | CANSLIM 交易员：七因子（C/A/N/S/L/I/M）打分排序 → 买入 / 卖出 / 融券做空信号 + A 股 T+1 与两融约束下的 ptrade 模拟盘 CLI 闭环（scan → recommend → plan → order → settle → risk → close → ledger；仅供研究与模拟） |
 
+**创作类**
+
+| 技能 | 说明 |
+|---|---|
+| `novel-forge` | 长篇小说工坊：立意 → 世界观/人物/大纲 → 逐章成稿，状态账本 + 六维逻辑闸（台词/空间/物理/时间/人物/因果伏笔）+ 反 AI 腔体检；每章过闸才进下一章，附确定性校验引擎 `lib/novel-lint.mjs` |
+
 配套角色提示词（`roles/`，供 subagent 复用）：planner / architect / critic / analyst(Metis) / momus / oracle / executor / verifier / code-reviewer / test-engineer。评审 / QA 双通道优先由 **teammate** 承担（`COND_REVIEW`：名册含 `spawn_teammate` → 团队双通道，两名 teammate 各担一通道 + `wait_agent` 收证据；否则名册含 `subagent` → 子代理双通道；两者皆无 → 报告 `independent review unavailable`，不批准）。
 
-可选能力与降级：官方团队九工具 / `ralph` / `subagent` 系 / `workflow` 等通道可能在当前 profile 未挂载或被预设停用；探测方式、判别陷阱与四级降级阶梯见 `docs/capability-matrix.md`（21 个技能/角色文件已内联同款指针）。
+可选能力与降级：官方团队九工具 / `ralph` / `subagent` 系 / `workflow` 等通道可能在当前 profile 未挂载或被预设停用；探测方式、判别陷阱与四级降级阶梯见 `docs/capability-matrix.md`（22 个技能/角色文件已内联同款指针）。
 
-（v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举，共 25 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
+（v0.1.0 试点 + P1 规划类 + P2 执行类 + P3 质量类 + P4 运维自举，共 26 技能；发布（npm + awesome-dsh-plugin + dshmarket）在路线图中。）
 
 ## 安装
 
@@ -110,7 +123,7 @@ dsh plugin --profile web add oh-my-deepseek-harness
 node --test test/*.test.mjs   # 技能契约测试
 ```
 
-新增技能 = 在 `skills/<name>/SKILL.md` 写 frontmatter（`name` + `description` 必填，`argument-hint` 可选）+ 正文，无需改任何代码。
+新增技能 = 在 `skills/<name>/SKILL.md` 写 frontmatter（`name` + `description` 必填，`argument-hint` 可选）+ 正文，无需改任何代码（带确定性引擎的技能如 `novel-forge` 另需同步 `lib/` 与 `test/` 下的引擎与测试）。
 
 ## 许可证
 

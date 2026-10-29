@@ -1,0 +1,18 @@
+{
+  "chapters": [
+    {
+      "chapter": 1,
+      "title": "一",
+      "scenes": [
+        {
+          "id": "ch1-s1",
+          "place": "hall",
+          "cast": ["lin-jin"],
+          "outcome": "林烬拿到怀表",
+          "hooks_plant": ["h-stale"],
+          "hooks_pay": ["h-early"]
+        }
+      ]
+    }
+  ]
+}

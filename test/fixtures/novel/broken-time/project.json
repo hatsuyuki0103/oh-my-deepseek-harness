@@ -1,0 +1,15 @@
+{
+  "schema": "novel-forge/v1",
+  "title": "时间故障",
+  "slug": "broken-time",
+  "lang": "zh-CN",
+  "viewpoint": { "character": "lin-jin", "mode": "third-limited", "tense": "past" },
+  "chapterWords": 100,
+  "chapterWordsTolerance": 0.9,
+  "staleHookChapters": 5,
+  "storyYear": 2026,
+  "daylight": { "sunrise": "06:30", "sunset": "18:00" },
+  "hardRules": [],
+  "envRules": [],
+  "style": { "forbiddenWords": [], "thresholds": {} }
+}

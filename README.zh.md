@@ -19,7 +19,7 @@ Adapted from the skill designs of [oh-my-codex](https://github.com/Yeachan-Heo/o
 |---|---|
 | `deep-interview` | Socratic deep interview: per-round structured questions + ambiguity scoring, converging to an executable spec |
 
-All 25 skills are shipped — treat the `README.md` table as the source of truth for the full catalog, and see `docs/capability-matrix.md` for optional-capability probes and the four-level degradation ladder. v2.0.1 highlights: the two media-generation skills were removed (breaking change — the most convenient recovery source is the pre-deletion commit `cc4605f`, whose ancestors still carry both skills in one shot; per skill, `e868005` = Aliyun and `f9e0304` = Tencent, the latter already including Aliyun), `autopilot` now defaults to agent-team collaboration (`spawn_teammate` + `team_task_*` board, four-level fallback), and `skills/team/references/skill-dispatch.md` carries the 25-skill dispatch matrix. v2.1.0 adds `canslim-trader` (CANSLIM seven-factor scoring → long/short signals → the `ptrade` paper-trading CLI loop under A-share T+1 and margin rules; research and paper trading only, not investment advice).
+All 26 skills are shipped — treat the `README.md` table as the source of truth for the full catalog, and see `docs/capability-matrix.md` for optional-capability probes and the four-level degradation ladder. v2.0.1 highlights: the two media-generation skills were removed (breaking change — the most convenient recovery source is the pre-deletion commit `cc4605f`, whose ancestors still carry both skills in one shot; per skill, `e868005` = Aliyun and `f9e0304` = Tencent, the latter already including Aliyun), `autopilot` now defaults to agent-team collaboration (`spawn_teammate` + `team_task_*` board, four-level fallback), and `skills/team/references/skill-dispatch.md` carries the 26-skill dispatch matrix. v2.1.0 adds `canslim-trader` (CANSLIM seven-factor scoring → long/short signals → the `ptrade` paper-trading CLI loop under A-share T+1 and margin rules; research and paper trading only, not investment advice). v2.3.0 adds `novel-forge`: a long-form fiction workshop with a state ledger, a six-dimension logic gate (dialogue / space / physics / time / character / causality) and anti-AI-voice scoring, enforced by the deterministic `lib/novel-lint.mjs` engine.
 
 ## Install
 
@@ -35,7 +35,7 @@ Restart `dsh web`; the skills then appear in the session skill catalog and are l
 node --test test/*.test.mjs   # provider contract tests
 ```
 
-Adding a skill = writing `skills/<name>/SKILL.md` with frontmatter (`name` + `description` required, `argument-hint` optional) and a body. No code changes needed.
+Adding a skill = writing `skills/<name>/SKILL.md` with frontmatter (`name` + `description` required, `argument-hint` optional) and a body. No code changes needed — except skills that ship a deterministic engine (e.g. `novel-forge`), which must also update `lib/` and `test/novel-lint.test.mjs`.
 
 ## License
 

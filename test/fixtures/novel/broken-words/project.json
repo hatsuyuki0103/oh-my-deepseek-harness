@@ -1,0 +1,15 @@
+{
+  "schema": "novel-forge/v1",
+  "title": "文字故障",
+  "slug": "broken-words",
+  "lang": "zh-CN",
+  "viewpoint": { "character": "lin-jin", "mode": "third-limited", "tense": "past" },
+  "chapterWords": 1000,
+  "chapterWordsTolerance": 0.2,
+  "staleHookChapters": 5,
+  "storyYear": 2026,
+  "daylight": { "sunrise": "06:30", "sunset": "18:00" },
+  "hardRules": [],
+  "envRules": [],
+  "style": { "forbiddenWords": [], "thresholds": {} }
+}

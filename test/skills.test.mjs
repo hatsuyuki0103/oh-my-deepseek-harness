@@ -138,7 +138,7 @@ const COND_REVIEW = '> 评审通道（按名册实况）：名册含 `spawn_team
 
 const SKILL_PTR_FILES = ['ralph', 'visual-ralph', 'autopilot', 'ralplan', 'plan', 'prometheus-strict', 'deep-interview',
   'ultrawork', 'ecomode', 'security-review', 'ai-slop-cleaner', 'ultraqa', 'code-review', 'team', 'doctor', 'cancel', 'ultragoal',
-  'canslim-trader']
+  'canslim-trader', 'novel-forge']
 const ROLE_PTR_FILES = ['planner', 'oracle', 'momus']
 const COND_REVIEW_FILES = ['code-review', 'ultraqa', 'ralplan', 'plan']
 
@@ -241,6 +241,7 @@ const CANONICAL_MATRIX = {
   'ecomode': ['lead', 'lead-only', '无写入', '委派计数对比'],
   'git-master': ['executor', 'serial', 'git 操作单写者', '`git log/show` 回执'],
   'note': ['lead', 'lead-only', '`.omx/notepad.md` 独占', '追加条目'],
+  'novel-forge': ['executor+verifier(逻辑闸)', 'staged', '`.omx/novel/<slug>/**` 独占（单写者）', '`node lib/novel-lint.mjs lint <project> --json` 退出码 + 门禁报告'],
   'plan': ['planner(+architect+critic)', 'staged(强制串行评审)', '`.omx/plans`', 'PRD/test-spec'],
   'prometheus-strict': ['analyst(Metis)+momus+oracle', 'staged', '`.omx/plans/prometheus-strict`', '三声部产物'],
   'ralph': ['executor+architect', 'staged', '每轮独占切片', '轮次报告 + 复核签字'],
@@ -391,8 +392,8 @@ test('能力矩阵：docs/capability-matrix.md 存在且含四类能力、降级
     '缺少 send_message 判别行（须同行含 target 与 agent_id）')
 })
 
-test('降级指针契约：21 文件逐字指针 + review 通道条件行 + ralph 提及守卫（非空洞自测）', async () => {
-  // 18 skills + 3 roles：指针行 H1+2 逐字相等；4 个评审技能另有 H1+3 条件行
+test('降级指针契约：22 文件逐字指针 + review 通道条件行 + ralph 提及守卫（非空洞自测）', async () => {
+  // 19 skills + 3 roles：指针行 H1+2 逐字相等；4 个评审技能另有 H1+3 条件行
   for (const name of SKILL_PTR_FILES) {
     const file = `skills/${name}/SKILL.md`
     const content = await readFile(path.join(SKILLS_DIR, name, 'SKILL.md'), 'utf8')
@@ -479,7 +480,7 @@ test('团队桥接：doctor 探测面与动态插件降级 / cancel 任务板收
 test('元数据与文档一致性：version 2.2.0 / files / dshVersions / capability 见证 / CHANGELOG / docs entry / README.zh', async () => {
   const pkgRaw = await readFile(path.join(PKG_ROOT, 'package.json'), 'utf8')
   const pkg = JSON.parse(pkgRaw)
-  assert.equal(pkg.version, '2.2.0')
+  assert.equal(pkg.version, '2.3.0')
   for (const f of ['test', 'CHANGELOG.md', 'docs']) {
     assert.ok(pkg.files.includes(f), `package.json files 应含 ${f}（实际：${JSON.stringify(pkg.files)}）`)
   }
@@ -493,7 +494,7 @@ test('元数据与文档一致性：version 2.2.0 / files / dshVersions / capabi
   assert.ok(changelog.includes('## [1.5.0]'), 'CHANGELOG 应保留 ## [1.5.0] 历史段（锁历史不丢）')
 
   const readme = await readFile(README_PATH, 'utf8')
-  assert.ok(readme.includes('共 25 技能'), 'README.md 应含「共 25 技能」')
+  assert.ok(readme.includes('共 26 技能'), 'README.md 应含「共 26 技能」')
   assert.ok(readme.includes('docs/capability-matrix.md'), 'README.md 应含能力矩阵指针')
 
   const readmeZh = await readFile(path.join(PKG_ROOT, 'README.zh.md'), 'utf8')
@@ -502,7 +503,7 @@ test('元数据与文档一致性：version 2.2.0 / files / dshVersions / capabi
 
   const entry = await readFile(path.join(PKG_ROOT, 'docs', 'awesome-dsh-plugin-entry.yml'), 'utf8')
   assert.ok(entry.includes('and 17 more'), 'awesome entry 应含 and 17 more')
-  assert.ok(entry.includes('25 个技能'), 'awesome entry 应含 25 个技能')
+  assert.ok(entry.includes('26 个技能'), 'awesome entry 应含 26 个技能')
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -551,10 +552,10 @@ test('TA-07 删除锁定：媒体技能名在文档/技能/测试面清零（含
 })
 
 // 计数残留正则：源码内运行时拼接（与 test-spec §2 冻结模式等价；此处不复制字面量，避免自指）
-const R26 = ['2', '6'].join('')
+const STALE_COUNT = ['2', '5'].join('')   // 计数残留锁：锁「上一代计数 25」（v2.3.0 起 26 技能）
 // R1：`26\s*(技能|个技能|个|行|skills?)` 允许无空格写法（26个技能 / 26行 / 26skills）；整体大小写不敏感
 const COUNT_RESIDUE_RE = new RegExp(
-  [R26, '\\s*(技能|个技能|个|行|skills?)|', R26, '/', R26, '|完整 ', R26, '|and 1', '9 more|媒体', '生成'].join(''),
+  [STALE_COUNT, '\\s*(技能|个技能|个|行|skills?)|', STALE_COUNT, '/', STALE_COUNT, '|完整 ', STALE_COUNT, '|and 1', '9 more|媒体', '生成'].join(''),
   'i'
 )
 
@@ -626,4 +627,42 @@ test('TA-08 autopilot 默认组队：小节体锚定 + 协议结构次序 + 三�
   }
   // F1 跨文件反矛盾：team 不得回收「不自动从 ultragoal 启动」
   assert.equal(teamSkill.includes(TEAM_NO_AUTO_START), false, `team 技能不得回收旧口径（${TEAM_NO_AUTO_START}）`)
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
+// novel-forge 契约（AC-11）：RULES ↔ references/logic-rules.md 双向等值 + SKILL.md token
+// ─────────────────────────────────────────────────────────────────────────────
+const NOVEL_SKILL_PATH = path.join(SKILLS_DIR, 'novel-forge', 'SKILL.md')
+const NOVEL_REFS_DIR = path.join(SKILLS_DIR, 'novel-forge', 'references')
+
+test('novel-forge 契约：RULES 与 logic-rules.md 双向等值 + SKILL.md 六维/反 AI 腔/降级 token', async () => {
+  const { RULES } = await import('../lib/novel-lint.mjs')
+  assert.equal(RULES.length, 62, 'RULES 应恰为 62 条（PRD §5.4 v1.2）')
+  const ids = new Set(RULES.map((r) => r.id))
+  assert.equal(ids.size, RULES.length, 'RULES id 必须唯一')
+  for (const r of RULES) {
+    assert.match(r.id, /^[A-Z]+-\d{3}$/, `rule id 格式非法：${r.id}`)
+    assert.ok(['BLOCKER', 'MAJOR', 'MINOR', 'NIT', 'INFO'].includes(r.severity), `severity 必须是全称：${r.id} = ${r.severity}`)
+    assert.ok(['structure', 'space', 'time', 'physics', 'dialogue', 'character', 'fact', 'hook', 'outline', 'voice'].includes(r.dimension), `dimension 非法：${r.id}`)
+    assert.ok(['prose', 'bible', 'outline', 'config'].includes(r.fixRoute), `fixRoute 非法：${r.id}`)
+  }
+
+  const doc = await readFile(path.join(NOVEL_REFS_DIR, 'logic-rules.md'), 'utf8')
+  const docIds = new Set([...doc.matchAll(/\b([A-Z]{3,6}-\d{3})\b/g)].map((m) => m[1]))
+  // 双向等值：RULES → docs 与 docs → RULES 均不得缺项/多项
+  assert.deepEqual([...ids].sort(), [...docIds].sort(), 'RULES 与 references/logic-rules.md 的规则 id 集合必须双向等值')
+  // 非空洞自测：删一条后集合断言必须失败
+  assert.notDeepEqual([...ids].sort().slice(1), [...docIds].sort(), '集合断言必须能捕获缺项（非空洞自测）')
+
+  const skill = await readFile(NOVEL_SKILL_PATH, 'utf8')
+  for (const token of ['六维', '反 AI 腔', '反向抽取复核', 'lib/novel-lint.mjs', '.omx/novel/', '门禁', '人类负控', '62 条', 'CHAR-006', '≥2 段']) {
+    assert.ok(skill.includes(token), `novel-forge SKILL.md 缺 token：${token}`)
+  }
+  for (const stale of ['61 条规则', '≥1 段**公认的人类写作']) {
+    assert.equal(skill.includes(stale), false, `novel-forge SKILL.md 不得回退到旧口径：${stale}`)
+  }
+  for (const ref of ['logic-rules.md', 'story-state-schema.md', 'anti-ai-voice.md', 'craft-patterns.md']) {
+    const ok = await readFile(path.join(NOVEL_REFS_DIR, ref)).then(() => true, () => false)
+    assert.ok(ok, `缺少 references/${ref}`)
+  }
 })

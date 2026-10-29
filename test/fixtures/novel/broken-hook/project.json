@@ -1,0 +1,14 @@
+{
+  "schema": "novel-forge/v1",
+  "title": "因果故障",
+  "slug": "broken-hook",
+  "lang": "zh-CN",
+  "viewpoint": { "character": "lin-jin", "mode": "third-limited", "tense": "past" },
+  "chapterWords": 100,
+  "chapterWordsTolerance": 0.9,
+  "storyYear": 2026,
+  "daylight": { "sunrise": "06:30", "sunset": "18:00" },
+  "hardRules": [],
+  "envRules": [],
+  "style": { "forbiddenWords": [], "thresholds": {} }
+}

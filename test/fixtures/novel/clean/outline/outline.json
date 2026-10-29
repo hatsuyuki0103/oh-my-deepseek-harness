@@ -1,0 +1,46 @@
+{
+  "chapters": [
+    {
+      "chapter": 1,
+      "title": "桥东的雨",
+      "scenes": [
+        {
+          "id": "ch1-s1",
+          "place": "qiao-dong",
+          "cast": ["lin-jin", "xu-an"],
+          "goal": "找到父亲留下的怀表",
+          "conflict": "徐岸不想让他查",
+          "outcome": "林烬拿到停摆的怀表",
+          "hooks_plant": ["h-001"],
+          "hooks_pay": []
+        },
+        {
+          "id": "ch1-s2",
+          "place": "cha-guan",
+          "cast": ["lin-jin", "xu-an"],
+          "goal": "打听账本的消息",
+          "conflict": "茶馆人多口杂",
+          "outcome": "听说账本被撕走一页",
+          "hooks_plant": [],
+          "hooks_pay": []
+        }
+      ]
+    },
+    {
+      "chapter": 2,
+      "title": "码头",
+      "scenes": [
+        {
+          "id": "ch2-s1",
+          "place": "pier-7",
+          "cast": ["lin-jin"],
+          "goal": "等父亲的工友",
+          "conflict": "对方没有来",
+          "outcome": "林烬决定继续查",
+          "hooks_plant": ["h-002"],
+          "hooks_pay": ["h-001"]
+        }
+      ]
+    }
+  ]
+}

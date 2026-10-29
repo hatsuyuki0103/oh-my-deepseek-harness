@@ -1,0 +1,11 @@
+{
+  "places": [
+    { "id": "qiao-dong", "name": "桥东旧宅", "region": "港区", "aliases": ["旧宅"], "light": "dim" },
+    { "id": "cha-guan", "name": "老茶馆", "region": "港区", "aliases": [], "light": "day" },
+    { "id": "pier-7", "name": "七号码头", "region": "港区", "aliases": ["码头"], "light": "day" }
+  ],
+  "edges": [
+    { "from": "qiao-dong", "to": "cha-guan", "mode": "walk", "minutes": 8, "bidirectional": true },
+    { "from": "cha-guan", "to": "pier-7", "mode": "walk", "minutes": 15, "bidirectional": true }
+  ]
+}

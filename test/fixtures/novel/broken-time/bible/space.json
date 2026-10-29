@@ -1,0 +1,9 @@
+{
+  "places": [
+    { "id": "room-a", "name": "一号仓", "region": "港区", "aliases": [], "light": "dim" },
+    { "id": "room-b", "name": "二号仓", "region": "港区", "aliases": [], "light": "dim" }
+  ],
+  "edges": [
+    { "from": "room-a", "to": "room-b", "mode": "walk", "minutes": 1, "bidirectional": true }
+  ]
+}

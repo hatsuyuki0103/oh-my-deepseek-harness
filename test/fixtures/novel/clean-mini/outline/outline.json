@@ -1,0 +1,20 @@
+{
+  "chapters": [
+    {
+      "chapter": 1,
+      "title": "雨",
+      "scenes": [
+        {
+          "id": "ch1-s1",
+          "place": "qiao-dong",
+          "cast": ["lin-jin"],
+          "goal": "找到抽屉钥匙",
+          "conflict": "屋里没有人",
+          "outcome": "林烬找到怀表",
+          "hooks_plant": ["h-000"],
+          "hooks_pay": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "places": [
+    { "id": "qiao-dong", "name": "桥东旧宅", "region": "港区", "aliases": ["旧宅"], "light": "dim" }
+  ],
+  "edges": []
+}

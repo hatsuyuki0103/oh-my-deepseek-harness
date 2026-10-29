@@ -1,0 +1,5 @@
+{"id":"h-stale","question":"怀表里藏着什么","plant":1,"pay":null,"status":"OPEN","staleAfter":null,"notes":"长期未回收"}
+{"id":"h-early","question":"谁先动的手","plant":2,"pay":1,"status":"PAID","staleAfter":null,"notes":"回收早于埋设"}
+{"id":"h-broken","question":"账本在哪","plant":3,"pay":3,"status":"DEFERRED","staleAfter":null,"notes":"已作废却仍回收"}
+{"id":"h-mismatch","question":"谁撕的页","plant":6,"pay":null,"status":"OPEN","staleAfter":null,"notes":"断言与派生不一致"}
+{"id":"h-orphan","question":"断头伏笔","plant":99,"pay":null,"status":"OPEN","staleAfter":null,"notes":"指向不存在的章节"}

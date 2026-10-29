@@ -1,0 +1,19 @@
+{
+  "schema": "novel-forge/v1",
+  "title": "物理故障",
+  "slug": "broken-physics",
+  "lang": "zh-CN",
+  "viewpoint": { "character": "lin-jin", "mode": "third-limited", "tense": "past" },
+  "chapterWords": 100,
+  "chapterWordsTolerance": 0.9,
+  "staleHookChapters": 5,
+  "storyYear": 2026,
+  "daylight": { "sunrise": "06:30", "sunset": "18:00" },
+  "hardRules": [
+    { "id": "R-001", "statement": "本世界没有超自然力量，一切异常必须有物理解释", "scope": "world" }
+  ],
+  "envRules": [
+    { "env": "underwater", "requiresAny": ["scuba", "水肺"], "message": "水下场景需要装备或能力声明" }
+  ],
+  "style": { "forbiddenWords": [], "thresholds": {} }
+}

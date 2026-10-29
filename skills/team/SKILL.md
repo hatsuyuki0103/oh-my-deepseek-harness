@@ -94,7 +94,7 @@ DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、�
 
 ## 技能→teammate 调度矩阵（摘要）
 
-完整 25 行表在 [`references/skill-dispatch.md`](references/skill-dispatch.md)，与本表同源（改一处必须同步另一处）。
+完整 26 行表在 [`references/skill-dispatch.md`](references/skill-dispatch.md)，与本表同源（改一处必须同步另一处）。
 
 | 技能 | 建议角色 | 并行性 | 写入范围策略 | 证据要求 |
 |---|---|---|---|---|
@@ -111,6 +111,7 @@ DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、�
 | `ecomode` | lead | lead-only | 无写入 | 委派计数对比 |
 | `git-master` | executor | serial | git 操作单写者 | `git log/show` 回执 |
 | `note` | lead | lead-only | `.omx/notepad.md` 独占 | 追加条目 |
+| `novel-forge` | executor+verifier(逻辑闸) | staged | `.omx/novel/<slug>/**` 独占（单写者） | `node lib/novel-lint.mjs lint <project> --json` 退出码 + 门禁报告 |
 | `plan` | planner(+architect+critic) | staged(强制串行评审) | `.omx/plans` | PRD/test-spec |
 | `prometheus-strict` | analyst(Metis)+momus+oracle | staged | `.omx/plans/prometheus-strict` | 三声部产物 |
 | `ralph` | executor+architect | staged | 每轮独占切片 | 轮次报告 + 复核签字 |

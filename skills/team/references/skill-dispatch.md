@@ -1,11 +1,11 @@
-# 技能 → teammate 调度矩阵（25/25 全表）
+# 技能 → teammate 调度矩阵（26/26 全表）
 
 > `team` 技能的调度真源：`skills/team/SKILL.md` 的「技能→teammate 调度矩阵（摘要）」与本表**同源**，改一处必须同步另一处。
 > 并行性取值：serial | fan-out | staged | lead-only（不新增第 5 种取值）。
 > 写入范围策略里的路径是**登记用建议值**，不是锁；`writeScopes` 只警告不授权，共享 cwd 无文件锁。
 > 可选能力（官方团队九工具 / `subagent` / `workflow` / `ralph` 工具）以名册实况为准，未挂载或被预设停用时的降级阶梯与探测规则见 `docs/capability-matrix.md`。
 
-## 全表（25 行 = `skills/` 目录集合）
+## 全表（26 行 = `skills/` 目录集合）
 
 | 技能 | 建议角色 | 并行性 | 写入范围策略 | 证据要求 |
 |---|---|---|---|---|
@@ -22,6 +22,7 @@
 | `ecomode` | lead | lead-only | 无写入 | 委派计数对比 |
 | `git-master` | executor | serial | git 操作单写者 | `git log/show` 回执 |
 | `note` | lead | lead-only | `.omx/notepad.md` 独占 | 追加条目 |
+| `novel-forge` | executor+verifier(逻辑闸) | staged | `.omx/novel/<slug>/**` 独占（单写者） | `node lib/novel-lint.mjs lint <project> --json` 退出码 + 门禁报告 |
 | `plan` | planner(+architect+critic) | staged(强制串行评审) | `.omx/plans` | PRD/test-spec |
 | `prometheus-strict` | analyst(Metis)+momus+oracle | staged | `.omx/plans/prometheus-strict` | 三声部产物 |
 | `ralph` | executor+architect | staged | 每轮独占切片 | 轮次报告 + 复核签字 |
