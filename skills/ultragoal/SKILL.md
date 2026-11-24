@@ -8,6 +8,8 @@ argument-hint: "<简报或规格路径>"
 
 > 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
 
+> **DSH 0.2.2-rc.5**：名册含 `subagent` + `team_task_create`/`team_task_list` 即团队面；用 `subagent`/`subagent_fork` 创建 teammate，`send_message`/`list_agents`/`wait_agent` 控制，不再使用 `spawn_teammate`/`TEAM_LEAD_REQUIRED`。
+
 ## 定位
 
 Ultragoal 把一份简报变成仓库内持久工件（.omx/ultragoal/brief.md、goals.json、ledger.jsonl），再用 **DSH goal 工具**安全驱动执行：一个聚合目标（create_goal 建一次）指向整个计划，故事 G001/G002… 的进度记在台账里。DSH 的 create_goal / get_goal / update_goal 即 Codex goal mode 的对应物。

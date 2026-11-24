@@ -8,6 +8,17 @@ argument-hint: "<想法 / issue / PRD / 需求产物>"
 
 > 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
 
+## DSH 0.2.2-rc.5 适配（本机现行，优先于下文旧口径）
+
+- 团队模式：在 root Session 的「模型 / 推理」菜单启用 **Use Agent Teams**；本机 profile 已设 `agent-team.defaultEnabled=true`，新会话默认开启。历史会话的 `team/mode` 选择优先。
+- rc.5 已**移除 `spawn_teammate` / `TEAM_LEAD_REQUIRED`**；创建/唤醒 teammate 使用标准工具：
+  - `subagent`：新建 teammate（默认 continuable）；
+  - `subagent_fork`：带父上下文 fork；
+  - `list_agents`：查看成员；`send_message`：发消息/续跑；`wait_agent`：等回执；`interrupt_agent`：停当前轮次。
+- 共享任务板仍是四个工具：`team_task_create` / `team_task_list` / `team_task_get` / `team_task_update`；任务 owner 用 `list_agents` 返回的名字。
+- 探测：名册同时含 `team_task_create`、`subagent`、`send_message`、`wait_agent` ⇒ 团队面可用；只有 `subagent` 无任务板 ⇒ 子代理降级；两者皆无 ⇒ `workflow` / 会话内串行。
+- **下文旧段落中出现的 `spawn_teammate`、官方团队九工具、`TEAM_LEAD_REQUIRED`，均按本节替换为上述 rc.5 标准 subagent 工具 + 四任务工具。**
+
 ## 目的
 
 非平凡工作的严格自主交付闭环，默认契约固定为：

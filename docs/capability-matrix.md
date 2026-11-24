@@ -56,3 +56,11 @@
 
 - 宿主层停用（`inactive`）或预设作用域重挂载都会让工具从名册消失；两者都按本矩阵的「未挂载时降级」列处理。
 - 预设覆盖是整份 `config` 覆盖：DSH 升级新增的预设行会被遮蔽 → 升级后必须复跑 `dsh --profile web --dump-config` 并同步覆盖层。
+## 7. DSH 0.2.2-rc.5 适配（优先于上文 0.2.0-rc.1 口径）
+
+- **Team 模式**：root Session 的模型/推理菜单开启 Use Agent Teams；profile 可设 `agent-team.defaultEnabled: true`。历史 session 的 `team/mode` 选择优先。
+- **不再有 `spawn_teammate` / `TEAM_LEAD_REQUIRED`**。teammate = 标准 `subagent`（或 `subagent_fork`）；`list_agents` / `send_message` / `wait_agent` / `interrupt_agent` 由 `@deepseek-ai/dsh-tool-subagent-control` 提供。
+- 共享任务板 = `team_task_create` / `team_task_list` / `team_task_get` / `team_task_update`。
+- 团队面探测：`team_task_create` + `subagent` + `send_message` + `wait_agent` 同时存在；只有 `subagent` 无任务板 = 子代理降级；两者皆无 = `workflow`/串行。
+- 旧 profile 若仍停用 `tool-subagent-control` / `tool-subagent` / `tool-subagent-fork`，rc.5 下会既没有 `spawn_teammate` 也没有 `subagent`，必须恢复这三行（并删除已废弃的 `tool-subagent-list-agents` 独立行）。
+- 升级后必须跑 `dsh --profile web --dump-config`；若旧 patch 引用已移除的 bundle entry（例如 market 已禁用的 skin），要先删除该 stale patch，否则 profile 无法重启。

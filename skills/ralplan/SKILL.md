@@ -9,6 +9,8 @@ argument-hint: "[--interactive|--deliberate] <任务描述>"
 > 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
 > 评审通道（按名册实况）：名册含 `spawn_teammate`（**仅 Lead 可调用**；teammate 需先请 Lead 建队）→ 团队双通道（两名 teammate 各担一通道，`wait_agent` 收证据）；否则名册含 `subagent` → 子代理双通道；否则报告 `independent review unavailable`，不批准。
 
+> **DSH 0.2.2-rc.5**：名册含 `subagent` + `team_task_create`/`team_task_list` 即团队面；用 `subagent`/`subagent_fork` 创建 teammate，`send_message`/`list_agents`/`wait_agent` 控制，不再使用 `spawn_teammate`/`TEAM_LEAD_REQUIRED`。
+
 ## 定位
 
 Ralplan 是 `plan --consensus` 的独立入口：驱动 Planner、Architect、Critic 三个角色完成结构化审议（RALPLAN-DR：默认短模式，--deliberate 应对高风险），并记录完整评审生命周期。**它是规划模式：只产出规划产物，绝不直接改代码；执行交接必须经用户显式批准。**

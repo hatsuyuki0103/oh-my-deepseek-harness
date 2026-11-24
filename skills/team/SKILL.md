@@ -8,6 +8,8 @@ argument-hint: "[N] <任务描述>"
 
 > 可选能力：本技能引用的可选工具（DSH 原生 `ralph` 工具、官方团队九工具、`workflow`、`subagent`/`subagent_fork`）可能在当前 profile 未挂载或被预设停用；探测方式与四级降级阶梯见本包根目录 `docs/capability-matrix.md`（技能目录上两级：`../../docs/capability-matrix.md`）。
 
+> **DSH 0.2.2-rc.5 适配（优先于下文）**：Team 模式用标准 subagent/subagent_fork 创建 teammate，send_message/list_agents/wait_agent/interrupt_agent 控制，team_task_* 用任务板；rc.5 已无 spawn_teammate/TEAM_LEAD_REQUIRED，下文旧口径按本节替换。
+
 ## 定位
 
 DSH 版 team = **官方 Agent Teams 团队原生化**：leader 负责拆路、派活、整合、终验；teammate 负责执行切片、报证据；任务态由团队任务板承载，不再依赖任何外部任务文件。
