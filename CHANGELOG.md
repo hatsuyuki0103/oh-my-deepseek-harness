@@ -2,7 +2,7 @@
 
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/) 格式，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [2.3.0] - 2026-10-29
+## [2.3.0] - 2026-11-24
 
 ### Added
 
@@ -16,6 +16,7 @@
 - **技能数 25 → 26 的全契约点同步**：README.md 新增「创作类」表行 + 「共 26 技能」+「22 个技能/角色文件」+「无需改代码」限定 + v2.3.0 亮点段；README.zh.md 改 26 并补 v2.3.0 句；`docs/awesome-dsh-plugin-entry.yml` en 显式清单 8→9（`and 17 more` 不变）与 zh「等 26 个技能」；`skills/team/SKILL.md` 与 `skills/team/references/skill-dispatch.md` 调度矩阵 25→26 行（三处行体逐字一致）。
 - `test/skills.test.mjs`：`SKILL_PTR_FILES` 增 `novel-forge`（22 文件）、`CANONICAL_MATRIX` 增冻结行、版本断言 2.3.0、README/awesome 计数同步、计数残留锁改名为 `STALE_COUNT` 并把值前移为 `'25'`（锁上一代计数），并新增 novel-forge 静态契约测试（`RULES`↔`references/logic-rules.md` 双向等值 + SKILL.md token +「62 条 / CHAR-006 / ≥2 段」防漂移断言）。
 - `package.json`：版本 `2.2.0` → `2.3.0`（新增技能属向后兼容的 minor）；keywords 增 `novel-forge` / `novel-writing`。
+- **DSH 0.2.2-rc.5 Agent Teams 适配**：rc.5 已移除 `spawn_teammate` / `TEAM_LEAD_REQUIRED`，Team 模式改用标准 `subagent` / `subagent_fork` + `send_message` / `list_agents` / `wait_agent` + `team_task_*`。`autopilot` / `team` / `code-review` / `ultraqa` / `ralplan` / `ultragoal` 增加 rc.5 权威适配说明，能力矩阵新增 rc.5 小节；`package.json` 的 `dshWorkshop.compatibility.dshVersions` 增补 `0.2.2-rc.5`。旧 profile 若仍停用 `tool-subagent-control` / `tool-subagent` / `tool-subagent-fork`，需先恢复（否则 rc.5 下没有任何委派面）。
 
 ### Fixed
 

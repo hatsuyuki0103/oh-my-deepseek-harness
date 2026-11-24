@@ -53,7 +53,8 @@
     "compatibility": {
       "dshVersions": [
         "0.1.0-rc.6",
-        "0.2.0-rc.1"
+        "0.2.0-rc.1",
+        "0.2.2-rc.5"
       ]
     },
     "capability": {
